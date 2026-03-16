@@ -1,15 +1,41 @@
+aid: kubernetes-operators
 name: Kubernetes Operators
-description: A method of packaging, deploying, and managing Kubernetes applications
-  that extends the Kubernetes API to create, configure, and manage instances of complex
-  applications on behalf of a Kubernetes user.
-url: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
+description: >-
+  Kubernetes Operators are a method of packaging, deploying, and managing
+  Kubernetes applications that extend the Kubernetes API to create, configure,
+  and manage instances of complex applications on behalf of a Kubernetes user.
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-- Kubernetes
-- Automation
-- Infrastructure
-- DevOps
-- Cloud Native
-created: '2025'
-modified: '2025'
-apis: []
-common: []
+  - Kubernetes
+  - Automation
+  - Infrastructure
+  - DevOps
+  - Cloud Native
+url: https://raw.githubusercontent.com/api-evangelist/kubernetes-operators/refs/heads/main/apis.yml
+created: '2025-01-01'
+modified: '2026-03-16'
+specificationVersion: '0.19'
+apis:
+  - aid: kubernetes-operators:kubernetes-operators
+    name: Kubernetes Operators
+    description: >-
+      Kubernetes Operators extend the Kubernetes API for managing complex
+      applications using custom resources and controllers.
+    humanURL: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
+    tags:
+      - Kubernetes
+      - Custom Resources
+    properties:
+      - type: Documentation
+        url: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
+common:
+  - type: Website
+    url: https://kubernetes.io
+  - type: Documentation
+    url: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
+  - type: GitHub Organization
+    url: https://github.com/operator-framework
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
