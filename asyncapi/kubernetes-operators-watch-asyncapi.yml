@@ -1,0 +1,245 @@
+asyncapi: 2.6.0
+info:
+  title: Kubernetes Operators Watch Events
+  description: >-
+    The Kubernetes Operators watch API provides streaming event notifications
+    for operator-related resources including CustomResourceDefinitions, OLM
+    resources (CatalogSources, Subscriptions, InstallPlans, ClusterServiceVersions,
+    OperatorGroups), and custom resources managed by operators. Operators are
+    built on the Kubernetes watch mechanism — controllers start informers that
+    subscribe to watch streams for their owned resource types and trigger
+    reconciliation loops when objects change. These same streams are used by
+    cluster administrators to monitor operator installation progress and CRD
+    lifecycle events.
+  version: v1.32.0
+  contact:
+    name: Operator Framework Community
+    url: https://github.com/operator-framework/operator-lifecycle-manager
+externalDocs:
+  description: Kubernetes API Concepts - Watch
+  url: https://kubernetes.io/docs/reference/using-api/api-concepts/
+servers:
+  kubernetesApiServer:
+    url: 'https://kubernetes.default.svc'
+    protocol: https
+    description: In-cluster Kubernetes API server for watch streaming.
+    security:
+      - bearerAuth: []
+      - clientCertificate: []
+channels:
+  /apis/apiextensions.k8s.io/v1/customresourcedefinitions:
+    description: >-
+      Watch stream for CustomResourceDefinition objects cluster-wide. CRD events
+      are generated when new custom resource types are registered, their schemas
+      are updated, or they are deleted. Operator controllers watch this channel
+      to react to CRD establishment before starting their reconciliation loops.
+    subscribe:
+      operationId: watchCustomResourceDefinitions
+      summary: Watch all CustomResourceDefinitions
+      description: >-
+        Streams WatchEvent messages for CRD lifecycle events. Fires on CRD
+        creation (ADDED), schema or version changes (MODIFIED), and deletion
+        (DELETED). The Established condition in the status indicates when the
+        API endpoint is ready to serve requests.
+      message:
+        $ref: '#/components/messages/CRDWatchEvent'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/catalogsources:
+    description: >-
+      Watch stream for CatalogSource objects in a namespace. OLM's catalog
+      operator watches this stream to start, update, or stop catalog registry
+      pods when catalog sources change.
+    parameters:
+      namespace:
+        $ref: '#/components/parameters/Namespace'
+    subscribe:
+      operationId: watchNamespacedCatalogSources
+      summary: Watch CatalogSources in a namespace
+      description: >-
+        Streams WatchEvent messages for CatalogSource changes. Fires when
+        catalog sources are added, their image or address is updated, or
+        they are deleted. Used by OLM to maintain catalog registry availability.
+      message:
+        $ref: '#/components/messages/CatalogSourceWatchEvent'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/subscriptions:
+    description: >-
+      Watch stream for Subscription objects in a namespace. OLM watches
+      subscriptions to detect when new operator installs are requested or
+      existing subscriptions need to be reconciled.
+    parameters:
+      namespace:
+        $ref: '#/components/parameters/Namespace'
+    subscribe:
+      operationId: watchNamespacedSubscriptions
+      summary: Watch Subscriptions in a namespace
+      description: >-
+        Streams WatchEvent messages for Subscription changes. Fires when
+        subscriptions are created (triggering InstallPlan generation), their
+        channel changes, or upgrade approval mode is toggled.
+      message:
+        $ref: '#/components/messages/SubscriptionWatchEvent'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/installplans:
+    description: >-
+      Watch stream for InstallPlan objects in a namespace. Used to monitor
+      operator installation progress and detect when Manual approval plans
+      are awaiting administrator approval.
+    parameters:
+      namespace:
+        $ref: '#/components/parameters/Namespace'
+    subscribe:
+      operationId: watchNamespacedInstallPlans
+      summary: Watch InstallPlans in a namespace
+      description: >-
+        Streams WatchEvent messages for InstallPlan lifecycle events. Fires
+        when new plans are created, when they transition between Installing
+        and Complete phases, or when approval is granted by an administrator.
+      message:
+        $ref: '#/components/messages/InstallPlanWatchEvent'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/clusterserviceversions:
+    description: >-
+      Watch stream for ClusterServiceVersion objects in a namespace. Operators
+      and administrative tools watch CSVs to track installation progress,
+      upgrades completing, and operator failures.
+    parameters:
+      namespace:
+        $ref: '#/components/parameters/Namespace'
+    subscribe:
+      operationId: watchNamespacedClusterServiceVersions
+      summary: Watch ClusterServiceVersions in a namespace
+      description: >-
+        Streams WatchEvent messages for CSV lifecycle events. Fires when
+        an operator's CSV transitions through Pending, Installing, Succeeded,
+        and Failed phases, enabling automated monitoring and alerting of
+        operator health.
+      message:
+        $ref: '#/components/messages/CSVWatchEvent'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: httpApiKey
+      name: Authorization
+      in: header
+      description: Kubernetes service account or user bearer token.
+    clientCertificate:
+      type: X509
+      description: Client TLS certificate signed by the cluster CA.
+  parameters:
+    Namespace:
+      description: Namespace name to scope the watch stream.
+      schema:
+        type: string
+  messages:
+    CRDWatchEvent:
+      name: CRDWatchEvent
+      title: CustomResourceDefinition Watch Event
+      summary: Change event for a Kubernetes CRD resource
+      description: >-
+        A watch event delivered when a CustomResourceDefinition is created,
+        its schema or versions are updated, or it is deleted. The status
+        Established condition transitions to True when the API endpoint is
+        live and ready for custom resource instances.
+      payload:
+        $ref: '#/components/schemas/WatchEvent'
+    CatalogSourceWatchEvent:
+      name: CatalogSourceWatchEvent
+      title: CatalogSource Watch Event
+      summary: Change event for an OLM CatalogSource resource
+      description: >-
+        A watch event delivered when a CatalogSource is added, its image
+        reference or update interval changes, or it is removed from the cluster.
+      payload:
+        $ref: '#/components/schemas/WatchEvent'
+    SubscriptionWatchEvent:
+      name: SubscriptionWatchEvent
+      title: Subscription Watch Event
+      summary: Change event for an OLM Subscription resource
+      description: >-
+        A watch event delivered when an operator Subscription is created,
+        its channel or approval mode changes, or it is deleted. Subscription
+        creation triggers OLM to generate an InstallPlan.
+      payload:
+        $ref: '#/components/schemas/WatchEvent'
+    InstallPlanWatchEvent:
+      name: InstallPlanWatchEvent
+      title: InstallPlan Watch Event
+      summary: Change event for an OLM InstallPlan resource
+      description: >-
+        A watch event delivered when an InstallPlan is created by OLM or
+        when its phase transitions. For Manual plans, this event fires when
+        the plan is awaiting approval and again when an admin approves it.
+      payload:
+        $ref: '#/components/schemas/WatchEvent'
+    CSVWatchEvent:
+      name: CSVWatchEvent
+      title: ClusterServiceVersion Watch Event
+      summary: Change event for an OLM ClusterServiceVersion resource
+      description: >-
+        A watch event delivered when a ClusterServiceVersion is installed,
+        transitions between phases (Pending, Installing, Succeeded, Failed),
+        or is deleted during an upgrade or uninstall.
+      payload:
+        $ref: '#/components/schemas/WatchEvent'
+  schemas:
+    WatchEvent:
+      type: object
+      required:
+        - type
+        - object
+      description: >-
+        A watch event representing a state change to a Kubernetes operator
+        resource. The type field indicates the change and the object field
+        contains the full resource state after the change.
+      properties:
+        type:
+          type: string
+          enum:
+            - ADDED
+            - MODIFIED
+            - DELETED
+            - BOOKMARK
+            - ERROR
+          description: >-
+            Type of change. ADDED on creation, MODIFIED on any update,
+            DELETED on removal. BOOKMARK provides a resourceVersion checkpoint.
+        object:
+          type: object
+          description: The resource at the time of the event.
+          properties:
+            apiVersion:
+              type: string
+              description: API version of the resource.
+            kind:
+              type: string
+              description: >-
+                Kind of the resource (e.g. CustomResourceDefinition,
+                CatalogSource, Subscription, InstallPlan, ClusterServiceVersion).
+            metadata:
+              type: object
+              description: Object metadata.
+              properties:
+                name:
+                  type: string
+                  description: Resource name.
+                namespace:
+                  type: string
+                  description: Resource namespace.
+                uid:
+                  type: string
+                  description: Unique identifier.
+                resourceVersion:
+                  type: string
+                  description: Resource version for watch resumption.
+                generation:
+                  type: integer
+                  description: Spec generation.
+                creationTimestamp:
+                  type: string
+                  format: date-time
+                  description: Creation timestamp.
+                labels:
+                  type: object
+                  additionalProperties:
+                    type: string
+                annotations:
+                  type: object
+                  additionalProperties:
+                    type: string

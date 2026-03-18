@@ -1,0 +1,1232 @@
+openapi: 3.1.0
+info:
+  title: Operator Lifecycle Manager API
+  description: >-
+    The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative
+    API for installing, upgrading, and managing the lifecycle of Operators and
+    their dependencies in a cluster. OLM provides resources including
+    CatalogSource for operator registries, OperatorGroup for namespace scoping,
+    Subscription for tracking desired operator versions and channels,
+    InstallPlan for reviewing pending installations, and ClusterServiceVersion
+    as the primary operator manifest defining runtime components and RBAC rules.
+  version: 0.28.0
+  contact:
+    name: Operator Framework Community
+    url: https://github.com/operator-framework/operator-lifecycle-manager
+  termsOfService: https://www.apache.org/licenses/LICENSE-2.0
+externalDocs:
+  description: Operator Lifecycle Manager Documentation
+  url: https://olm.operatorframework.io/docs/
+servers:
+  - url: https://kubernetes.default.svc
+    description: In-cluster Kubernetes API Server (OLM resources served as CRDs)
+tags:
+  - name: CatalogSource
+    description: >-
+      CatalogSource resources pointing to operator registries (gRPC or
+      ConfigMap-backed) that OLM queries for available operators and versions.
+  - name: OperatorGroup
+    description: >-
+      OperatorGroup resources defining which namespaces operators installed
+      in the group are allowed to watch and manage resources in.
+  - name: Subscription
+    description: >-
+      Subscription resources expressing intent to install an operator from a
+      channel, with automatic or manual update approval.
+  - name: InstallPlan
+    description: >-
+      InstallPlan resources listing the set of resources OLM will create to
+      install or upgrade an operator, pending admin approval if required.
+  - name: ClusterServiceVersion
+    description: >-
+      ClusterServiceVersion resources representing the installed operator
+      version with its deployment spec, RBAC rules, and owned CRDs.
+security:
+  - bearerAuth: []
+  - clientCertificate: []
+paths:
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/catalogsources:
+    get:
+      operationId: listNamespacedCatalogSources
+      summary: List CatalogSources in a namespace
+      description: >-
+        Returns a list of all CatalogSource resources in the specified namespace.
+        CatalogSources point to operator registries from which OLM can
+        discover available operators, versions, and channels.
+      tags:
+        - CatalogSource
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/LabelSelector'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Watch'
+      responses:
+        '200':
+          description: List of CatalogSources
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSourceList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createNamespacedCatalogSource
+      summary: Create a CatalogSource
+      description: >-
+        Creates a new CatalogSource in the specified namespace. OLM will
+        connect to the registry and begin indexing available operators,
+        making them discoverable for Subscription creation.
+      tags:
+        - CatalogSource
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CatalogSource'
+      responses:
+        '201':
+          description: CatalogSource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSource'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/catalogsources/{name}:
+    get:
+      operationId: getNamespacedCatalogSource
+      summary: Get a CatalogSource
+      description: >-
+        Returns the specified CatalogSource including its type, registry
+        connection details, update interval, and connectivity status.
+      tags:
+        - CatalogSource
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: CatalogSource details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: replaceNamespacedCatalogSource
+      summary: Replace a CatalogSource
+      description: >-
+        Replaces the full specification of the specified CatalogSource.
+        Used to update the registry image or address when a new catalog
+        image is published.
+      tags:
+        - CatalogSource
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CatalogSource'
+      responses:
+        '200':
+          description: CatalogSource updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteNamespacedCatalogSource
+      summary: Delete a CatalogSource
+      description: >-
+        Deletes the specified CatalogSource. Subscriptions referencing this
+        catalog will no longer receive updates, but existing installed
+        operators are not affected.
+      tags:
+        - CatalogSource
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: CatalogSource deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /apis/operators.coreos.com/v1/namespaces/{namespace}/operatorgroups:
+    get:
+      operationId: listNamespacedOperatorGroups
+      summary: List OperatorGroups in a namespace
+      description: >-
+        Returns a list of all OperatorGroup resources in the specified namespace.
+        An OperatorGroup scopes which namespaces operators installed in that
+        namespace can watch and manage. Only one OperatorGroup should exist
+        per namespace.
+      tags:
+        - OperatorGroup
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/LabelSelector'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Watch'
+      responses:
+        '200':
+          description: List of OperatorGroups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorGroupList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createNamespacedOperatorGroup
+      summary: Create an OperatorGroup
+      description: >-
+        Creates a new OperatorGroup in the specified namespace. Operators
+        installed in this namespace will be scoped to watch the namespaces
+        defined in targetNamespaces.
+      tags:
+        - OperatorGroup
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperatorGroup'
+      responses:
+        '201':
+          description: OperatorGroup created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorGroup'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /apis/operators.coreos.com/v1/namespaces/{namespace}/operatorgroups/{name}:
+    get:
+      operationId: getNamespacedOperatorGroup
+      summary: Get an OperatorGroup
+      description: >-
+        Returns the specified OperatorGroup including its target namespace
+        configuration and the list of namespaces currently in scope.
+      tags:
+        - OperatorGroup
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: OperatorGroup details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorGroup'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteNamespacedOperatorGroup
+      summary: Delete an OperatorGroup
+      description: >-
+        Deletes the specified OperatorGroup. This will disrupt operators in the
+        namespace that rely on the OperatorGroup for their namespace scope.
+      tags:
+        - OperatorGroup
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: OperatorGroup deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorGroup'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/subscriptions:
+    get:
+      operationId: listNamespacedSubscriptions
+      summary: List Subscriptions in a namespace
+      description: >-
+        Returns a list of all Subscription resources in the specified namespace.
+        Subscriptions express intent to install an operator from a specific
+        catalog and channel, with automatic or manual update approval.
+      tags:
+        - Subscription
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/LabelSelector'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Watch'
+      responses:
+        '200':
+          description: List of Subscriptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createNamespacedSubscription
+      summary: Create a Subscription
+      description: >-
+        Creates a new Subscription, triggering OLM to create an InstallPlan
+        and, if approval is Automatic, install the operator from the specified
+        catalog source and channel.
+      tags:
+        - Subscription
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+      responses:
+        '201':
+          description: Subscription created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/subscriptions/{name}:
+    get:
+      operationId: getNamespacedSubscription
+      summary: Get a Subscription
+      description: >-
+        Returns the specified Subscription including the operator package name,
+        catalog source, channel, installed CSV name, and current state.
+      tags:
+        - Subscription
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: Subscription details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: patchNamespacedSubscription
+      summary: Patch a Subscription
+      description: >-
+        Applies a partial update to the specified Subscription. Used to
+        change the channel, update approval mode, or pin to a specific
+        starting CSV version.
+      tags:
+        - Subscription
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Subscription patched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteNamespacedSubscription
+      summary: Delete a Subscription
+      description: >-
+        Deletes the specified Subscription. The operator's ClusterServiceVersion
+        and its managed resources remain installed; delete those separately
+        to fully remove the operator.
+      tags:
+        - Subscription
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: Subscription deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/installplans:
+    get:
+      operationId: listNamespacedInstallPlans
+      summary: List InstallPlans in a namespace
+      description: >-
+        Returns a list of all InstallPlan resources in the specified namespace.
+        InstallPlans list the resources OLM will create to install or upgrade
+        an operator. Manual approval plans require an admin to approve them
+        before installation proceeds.
+      tags:
+        - InstallPlan
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/LabelSelector'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Watch'
+      responses:
+        '200':
+          description: List of InstallPlans
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallPlanList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/installplans/{name}:
+    get:
+      operationId: getNamespacedInstallPlan
+      summary: Get an InstallPlan
+      description: >-
+        Returns the specified InstallPlan including the list of ClusterServiceVersions
+        and CRDs to be installed, the approval status, and the plan steps.
+      tags:
+        - InstallPlan
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: InstallPlan details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallPlan'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: patchNamespacedInstallPlan
+      summary: Approve an InstallPlan
+      description: >-
+        Patches the specified InstallPlan to approve it when the approval mode
+        is Manual. Set spec.approved=true to allow OLM to proceed with
+        installation.
+      tags:
+        - InstallPlan
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              type: object
+              properties:
+                spec:
+                  type: object
+                  properties:
+                    approved:
+                      type: boolean
+                      description: Set to true to approve the InstallPlan.
+      responses:
+        '200':
+          description: InstallPlan patched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallPlan'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/clusterserviceversions:
+    get:
+      operationId: listNamespacedClusterServiceVersions
+      summary: List ClusterServiceVersions in a namespace
+      description: >-
+        Returns a list of all ClusterServiceVersion resources in the specified
+        namespace. A CSV is the primary operator manifest installed by OLM,
+        containing the operator's deployment spec, RBAC rules, owned CRDs,
+        and metadata.
+      tags:
+        - ClusterServiceVersion
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/LabelSelector'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Watch'
+      responses:
+        '200':
+          description: List of ClusterServiceVersions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterServiceVersionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/clusterserviceversions/{name}:
+    get:
+      operationId: getNamespacedClusterServiceVersion
+      summary: Get a ClusterServiceVersion
+      description: >-
+        Returns the specified ClusterServiceVersion including the operator
+        deployment spec, RBAC permissions, owned and required CRDs, install
+        modes, and current phase (Installing, Succeeded, Failed).
+      tags:
+        - ClusterServiceVersion
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: ClusterServiceVersion details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterServiceVersion'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteNamespacedClusterServiceVersion
+      summary: Delete a ClusterServiceVersion
+      description: >-
+        Deletes the specified ClusterServiceVersion, uninstalling the operator.
+        OLM removes the operator's deployment and RBAC resources. Custom
+        resources managed by the operator are not automatically deleted.
+      tags:
+        - ClusterServiceVersion
+      parameters:
+        - $ref: '#/components/parameters/NamespaceParam'
+        - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: ClusterServiceVersion deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterServiceVersion'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Kubernetes service account or user bearer token.
+    clientCertificate:
+      type: mutualTLS
+      description: Client TLS certificate signed by the cluster CA.
+  parameters:
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
+      schema:
+        type: string
+    NameParam:
+      name: name
+      in: path
+      required: true
+      description: Name of the OLM resource.
+      schema:
+        type: string
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+    Watch:
+      name: watch
+      in: query
+      description: If true, stream watch events.
+      schema:
+        type: boolean
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+  schemas:
+    CatalogSource:
+      type: object
+      description: >-
+        A CatalogSource points to a registry from which OLM discovers
+        operators. It may reference a gRPC registry served by a container
+        image, a gRPC address, or a ConfigMap-backed in-cluster registry.
+      properties:
+        apiVersion:
+          type: string
+          const: operators.coreos.com/v1alpha1
+        kind:
+          type: string
+          const: CatalogSource
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          type: object
+          description: CatalogSource specification.
+          required:
+            - sourceType
+            - displayName
+          properties:
+            sourceType:
+              type: string
+              enum:
+                - grpc
+                - internal
+                - configmap
+              description: >-
+                Type of registry. grpc for container-image or address-based
+                registries; internal/configmap for ConfigMap-backed registries.
+            image:
+              type: string
+              description: >-
+                Container image running the gRPC catalog API. Used when
+                sourceType is grpc with an image reference.
+            address:
+              type: string
+              description: >-
+                gRPC address of an existing registry. Used when sourceType
+                is grpc and the pod is externally managed.
+            displayName:
+              type: string
+              description: Human-readable name for the catalog displayed in the UI.
+            publisher:
+              type: string
+              description: Name of the organization publishing this catalog.
+            description:
+              type: string
+              description: Description of the catalog and its contents.
+            updateStrategy:
+              type: object
+              description: How often the catalog image is polled for updates.
+              properties:
+                registryPoll:
+                  type: object
+                  properties:
+                    interval:
+                      type: string
+                      description: >-
+                        Duration string for polling interval. Example: 10m, 1h.
+        status:
+          type: object
+          description: Current connectivity and registry status.
+          properties:
+            connectionState:
+              type: object
+              properties:
+                address:
+                  type: string
+                  description: Address the catalog pod is serving on.
+                lastConnect:
+                  type: string
+                  format: date-time
+                  description: Time of last successful connection.
+                lastObservedState:
+                  type: string
+                  description: Last observed connection state.
+            registryService:
+              type: object
+              properties:
+                serviceName:
+                  type: string
+                serviceNamespace:
+                  type: string
+                port:
+                  type: string
+    CatalogSourceList:
+      type: object
+      required:
+        - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: CatalogSourceList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogSource'
+    OperatorGroup:
+      type: object
+      description: >-
+        An OperatorGroup scopes all operators installed in its namespace to
+        watch the namespaces listed in targetNamespaces. An empty
+        targetNamespaces means the operator watches all namespaces.
+      properties:
+        apiVersion:
+          type: string
+          const: operators.coreos.com/v1
+        kind:
+          type: string
+          const: OperatorGroup
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          type: object
+          description: OperatorGroup specification.
+          properties:
+            targetNamespaces:
+              type: array
+              description: >-
+                Namespaces the operators in this group will watch. Empty
+                means all namespaces (cluster-wide).
+              items:
+                type: string
+            selector:
+              type: object
+              description: >-
+                Label selector for namespaces this operator group targets.
+                An alternative to listing targetNamespaces explicitly.
+              properties:
+                matchLabels:
+                  type: object
+                  additionalProperties:
+                    type: string
+        status:
+          type: object
+          properties:
+            namespaces:
+              type: array
+              description: Resolved list of target namespaces.
+              items:
+                type: string
+            conditions:
+              type: array
+              items:
+                $ref: '#/components/schemas/Condition'
+    OperatorGroupList:
+      type: object
+      required:
+        - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: OperatorGroupList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperatorGroup'
+    Subscription:
+      type: object
+      description: >-
+        A Subscription expresses intent to install and keep current an operator
+        from a specific channel and catalog. OLM creates InstallPlans from
+        Subscriptions and manages upgrades when new versions are available.
+      properties:
+        apiVersion:
+          type: string
+          const: operators.coreos.com/v1alpha1
+        kind:
+          type: string
+          const: Subscription
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          type: object
+          description: Subscription specification.
+          required:
+            - name
+            - source
+            - sourceNamespace
+          properties:
+            name:
+              type: string
+              description: >-
+                Package name in the catalog to subscribe to. This matches
+                the packageName in the CatalogSource's registry.
+            source:
+              type: string
+              description: Name of the CatalogSource to use for this subscription.
+            sourceNamespace:
+              type: string
+              description: Namespace where the CatalogSource is located.
+            channel:
+              type: string
+              description: >-
+                Channel in the operator package to subscribe to. Example:
+                stable, alpha, fast. Defaults to the package's default channel.
+            startingCSV:
+              type: string
+              description: >-
+                Specific ClusterServiceVersion to start the subscription at.
+                Useful to pin to a specific version.
+            installPlanApproval:
+              type: string
+              enum:
+                - Automatic
+                - Manual
+              description: >-
+                Approval mode for InstallPlans. Automatic installs immediately;
+                Manual requires an admin to approve each InstallPlan.
+              default: Automatic
+        status:
+          type: object
+          properties:
+            installedCSV:
+              type: string
+              description: Currently installed CSV name.
+            currentCSV:
+              type: string
+              description: Latest CSV available in the subscribed channel.
+            state:
+              type: string
+              enum:
+                - AtLatestKnown
+                - UpgradePending
+                - UpgradeAvailable
+                - None
+              description: Current state of the subscription.
+            installPlanRef:
+              type: object
+              description: Reference to the pending or last InstallPlan.
+              properties:
+                name:
+                  type: string
+                namespace:
+                  type: string
+            conditions:
+              type: array
+              items:
+                $ref: '#/components/schemas/Condition'
+    SubscriptionList:
+      type: object
+      required:
+        - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: SubscriptionList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+    InstallPlan:
+      type: object
+      description: >-
+        An InstallPlan is generated by OLM to represent the set of resources
+        that will be created to install or upgrade an operator. When manual
+        approval is required, an admin must set spec.approved=true to proceed.
+      properties:
+        apiVersion:
+          type: string
+          const: operators.coreos.com/v1alpha1
+        kind:
+          type: string
+          const: InstallPlan
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          type: object
+          description: InstallPlan specification.
+          properties:
+            clusterServiceVersionNames:
+              type: array
+              description: CSV names to be installed by this plan.
+              items:
+                type: string
+            approval:
+              type: string
+              enum:
+                - Automatic
+                - Manual
+              description: Approval mode for this InstallPlan.
+            approved:
+              type: boolean
+              description: >-
+                Whether the plan has been approved. Set to true to approve
+                a Manual plan and allow OLM to proceed.
+        status:
+          type: object
+          properties:
+            phase:
+              type: string
+              enum:
+                - Installing
+                - Complete
+                - Failed
+              description: Current phase of the install plan.
+            conditions:
+              type: array
+              items:
+                $ref: '#/components/schemas/Condition'
+            plan:
+              type: array
+              description: List of steps in the installation plan.
+              items:
+                type: object
+                properties:
+                  resolving:
+                    type: string
+                    description: CSV this step is being resolved from.
+                  resource:
+                    type: object
+                    description: Resource to be created by this step.
+                    properties:
+                      group:
+                        type: string
+                      version:
+                        type: string
+                      kind:
+                        type: string
+                      name:
+                        type: string
+                      manifest:
+                        type: string
+                        description: YAML manifest for the resource.
+                  status:
+                    type: string
+                    enum:
+                      - Created
+                      - Present
+                      - WaitingForAPI
+                      - Unknown
+    InstallPlanList:
+      type: object
+      required:
+        - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: InstallPlanList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallPlan'
+    ClusterServiceVersion:
+      type: object
+      description: >-
+        A ClusterServiceVersion is the primary OLM manifest for an installed
+        operator version. It contains the operator's deployment spec, RBAC
+        rules, owned and required CRDs, install modes, and lifecycle hooks.
+      properties:
+        apiVersion:
+          type: string
+          const: operators.coreos.com/v1alpha1
+        kind:
+          type: string
+          const: ClusterServiceVersion
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          type: object
+          description: ClusterServiceVersion specification.
+          properties:
+            displayName:
+              type: string
+              description: Human-readable operator name shown in OperatorHub.
+            description:
+              type: string
+              description: Long-form markdown description of the operator.
+            version:
+              type: string
+              description: Semantic version of the operator. Example: 1.2.3.
+            maturity:
+              type: string
+              enum:
+                - alpha
+                - beta
+                - stable
+              description: Maturity level of the operator.
+            replaces:
+              type: string
+              description: >-
+                CSV name that this version replaces during upgrade. Used by
+                OLM to build the upgrade graph.
+            installModes:
+              type: array
+              description: >-
+                List of install modes supported by the operator defining which
+                namespace scopes are supported.
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                      - OwnNamespace
+                      - SingleNamespace
+                      - MultiNamespace
+                      - AllNamespaces
+                    description: Install mode type.
+                  supported:
+                    type: boolean
+                    description: Whether this install mode is supported.
+            install:
+              type: object
+              description: Install strategy defining the operator deployment.
+              properties:
+                strategy:
+                  type: string
+                  enum:
+                    - deployment
+                  description: Install strategy. Currently only deployment is supported.
+                spec:
+                  type: object
+                  description: Strategy spec containing deployment and RBAC details.
+                  properties:
+                    deployments:
+                      type: array
+                      description: Deployment specs for operator pods.
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          spec:
+                            type: object
+                            description: Kubernetes Deployment spec.
+                    permissions:
+                      type: array
+                      description: Namespace-scoped RBAC rules.
+                      items:
+                        type: object
+                        properties:
+                          serviceAccountName:
+                            type: string
+                          rules:
+                            type: array
+                            items:
+                              type: object
+                    clusterPermissions:
+                      type: array
+                      description: Cluster-scoped RBAC rules.
+                      items:
+                        type: object
+            customresourcedefinitions:
+              type: object
+              description: CRDs owned and required by this operator.
+              properties:
+                owned:
+                  type: array
+                  description: CRDs this operator manages.
+                  items:
+                    $ref: '#/components/schemas/CRDDescription'
+                required:
+                  type: array
+                  description: CRDs this operator depends on but does not manage.
+                  items:
+                    $ref: '#/components/schemas/CRDDescription'
+        status:
+          type: object
+          properties:
+            phase:
+              type: string
+              enum:
+                - Pending
+                - InstallReady
+                - Installing
+                - Succeeded
+                - Failed
+                - Unknown
+                - Replacing
+                - Deleting
+              description: Current lifecycle phase of the CSV.
+            conditions:
+              type: array
+              items:
+                $ref: '#/components/schemas/Condition'
+            lastTransitionTime:
+              type: string
+              format: date-time
+    CRDDescription:
+      type: object
+      description: >-
+        Description of a CRD owned or required by an operator, used in the
+        ClusterServiceVersion to declare the operator's CRD dependencies.
+      required:
+        - name
+        - version
+        - kind
+      properties:
+        name:
+          type: string
+          description: CRD name in {plural}.{group} format.
+        version:
+          type: string
+          description: Version of the CRD API.
+        kind:
+          type: string
+          description: Kind of the custom resource.
+        description:
+          type: string
+          description: Human-readable description of what this CRD represents.
+        displayName:
+          type: string
+          description: Human-readable display name for the CRD.
+    ClusterServiceVersionList:
+      type: object
+      required:
+        - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: ClusterServiceVersionList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterServiceVersion'
+    Condition:
+      type: object
+      description: A condition expressing an aspect of current resource state.
+      required:
+        - type
+        - status
+      properties:
+        type:
+          type: string
+          description: Type of condition.
+        status:
+          type: string
+          enum:
+            - 'True'
+            - 'False'
+            - Unknown
+        reason:
+          type: string
+          description: Machine-readable reason.
+        message:
+          type: string
+          description: Human-readable details.
+        lastTransitionTime:
+          type: string
+          format: date-time
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+    ListMeta:
+      type: object
+      properties:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
+          type: integer
+    Status:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+          enum:
+            - Success
+            - Failure

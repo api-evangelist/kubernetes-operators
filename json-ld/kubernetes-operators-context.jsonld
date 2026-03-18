@@ -1,0 +1,214 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "k8s": "https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#",
+    "apiext": "https://kubernetes.io/docs/reference/kubernetes-api/extend-resources/custom-resource-definition-v1/#",
+    "olm": "https://olm.operatorframework.io/docs/concepts/crds/",
+    "opfw": "https://operatorframework.io/operator-capabilities/",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "prov": "http://www.w3.org/ns/prov#",
+
+    "CustomResourceDefinition": {
+      "@id": "apiext:CustomResourceDefinition",
+      "@context": {
+        "spec": "apiext:CustomResourceDefinitionSpec",
+        "status": "apiext:CustomResourceDefinitionStatus",
+        "group": {
+          "@id": "apiext:CustomResourceDefinitionSpec.group",
+          "@type": "xsd:string"
+        },
+        "scope": {
+          "@id": "apiext:CustomResourceDefinitionSpec.scope",
+          "@type": "xsd:string"
+        },
+        "versions": {
+          "@id": "apiext:CustomResourceDefinitionSpec.versions",
+          "@container": "@set"
+        },
+        "names": "apiext:CustomResourceDefinitionNames"
+      }
+    },
+
+    "CatalogSource": {
+      "@id": "olm:catalogsource",
+      "@context": {
+        "sourceType": {
+          "@id": "olm:catalogsource-sourceType",
+          "@type": "xsd:string"
+        },
+        "image": {
+          "@id": "olm:catalogsource-image",
+          "@type": "xsd:string"
+        },
+        "address": {
+          "@id": "olm:catalogsource-address",
+          "@type": "xsd:string"
+        },
+        "displayName": {
+          "@id": "schema:name",
+          "@type": "xsd:string"
+        },
+        "publisher": {
+          "@id": "schema:publisher",
+          "@type": "xsd:string"
+        },
+        "description": {
+          "@id": "schema:description",
+          "@type": "xsd:string"
+        }
+      }
+    },
+
+    "OperatorGroup": {
+      "@id": "olm:operatorgroup",
+      "@context": {
+        "targetNamespaces": {
+          "@id": "olm:operatorgroup-targetNamespaces",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Subscription": {
+      "@id": "olm:subscription",
+      "@context": {
+        "channel": {
+          "@id": "olm:subscription-channel",
+          "@type": "xsd:string"
+        },
+        "source": {
+          "@id": "olm:subscription-source",
+          "@type": "xsd:string"
+        },
+        "sourceNamespace": {
+          "@id": "olm:subscription-sourceNamespace",
+          "@type": "xsd:string"
+        },
+        "startingCSV": {
+          "@id": "olm:subscription-startingCSV",
+          "@type": "xsd:string"
+        },
+        "installPlanApproval": {
+          "@id": "olm:subscription-installPlanApproval",
+          "@type": "xsd:string"
+        }
+      }
+    },
+
+    "InstallPlan": {
+      "@id": "olm:installplan",
+      "@context": {
+        "clusterServiceVersionNames": {
+          "@id": "olm:installplan-clusterServiceVersionNames",
+          "@container": "@set"
+        },
+        "approval": {
+          "@id": "olm:installplan-approval",
+          "@type": "xsd:string"
+        },
+        "approved": {
+          "@id": "olm:installplan-approved",
+          "@type": "xsd:boolean"
+        },
+        "phase": {
+          "@id": "olm:installplan-phase",
+          "@type": "xsd:string"
+        }
+      }
+    },
+
+    "ClusterServiceVersion": {
+      "@id": "olm:clusterserviceversion",
+      "@context": {
+        "displayName": {
+          "@id": "schema:name",
+          "@type": "xsd:string"
+        },
+        "description": {
+          "@id": "schema:description",
+          "@type": "xsd:string"
+        },
+        "version": {
+          "@id": "schema:version",
+          "@type": "xsd:string"
+        },
+        "maturity": {
+          "@id": "olm:clusterserviceversion-maturity",
+          "@type": "xsd:string"
+        },
+        "replaces": {
+          "@id": "olm:clusterserviceversion-replaces",
+          "@type": "xsd:string"
+        },
+        "installModes": {
+          "@id": "olm:clusterserviceversion-installModes",
+          "@container": "@set"
+        },
+        "customresourcedefinitions": {
+          "@id": "olm:clusterserviceversion-crds"
+        },
+        "minKubeVersion": {
+          "@id": "olm:clusterserviceversion-minKubeVersion",
+          "@type": "xsd:string"
+        }
+      }
+    },
+
+    "apiVersion": {
+      "@id": "k8s:apiversion",
+      "@type": "xsd:string"
+    },
+    "kind": {
+      "@id": "k8s:kind",
+      "@type": "xsd:string"
+    },
+    "metadata": {
+      "@id": "k8s:objectmeta-v1-meta"
+    },
+    "name": {
+      "@id": "schema:name",
+      "@type": "xsd:string"
+    },
+    "namespace": {
+      "@id": "k8s:namespace",
+      "@type": "xsd:string"
+    },
+    "uid": {
+      "@id": "dcterms:identifier",
+      "@type": "xsd:string"
+    },
+    "creationTimestamp": {
+      "@id": "dcterms:created",
+      "@type": "xsd:dateTime"
+    },
+    "labels": {
+      "@id": "k8s:labels",
+      "@container": "@index"
+    },
+    "annotations": {
+      "@id": "k8s:annotations",
+      "@container": "@index"
+    },
+    "spec": {
+      "@id": "k8s:spec"
+    },
+    "status": {
+      "@id": "k8s:status"
+    },
+    "conditions": {
+      "@id": "k8s:conditions",
+      "@container": "@set"
+    },
+    "generation": {
+      "@id": "k8s:generation",
+      "@type": "xsd:integer"
+    },
+    "resourceVersion": {
+      "@id": "k8s:resourceVersion",
+      "@type": "xsd:string"
+    }
+  }
+}
