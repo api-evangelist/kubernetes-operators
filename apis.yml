@@ -7,11 +7,11 @@ description: >-
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-  - Kubernetes
   - Automation
-  - Infrastructure
-  - DevOps
   - Cloud Native
+  - DevOps
+  - Infrastructure
+  - Kubernetes
 url: https://raw.githubusercontent.com/api-evangelist/kubernetes-operators/refs/heads/main/apis.yml
 created: '2025-01-01'
 modified: '2026-03-18'
@@ -27,10 +27,10 @@ apis:
       applications.
     humanURL: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
     tags:
-      - Kubernetes
-      - Custom Resources
       - Automation
       - Cloud Native
+      - Custom Resources
+      - Kubernetes
     properties:
       - type: Documentation
         url: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
@@ -48,10 +48,10 @@ apis:
       domain-specific objects.
     humanURL: https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/
     tags:
-      - Kubernetes
-      - Custom Resources
       - API Extension
       - Cloud Native
+      - Custom Resources
+      - Kubernetes
     properties:
       - type: Documentation
         url: https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/
@@ -73,10 +73,10 @@ apis:
       distribution.
     humanURL: https://sdk.operatorframework.io/
     tags:
+      - Go
       - Kubernetes
       - Operators
       - SDK
-      - Go
     properties:
       - type: Documentation
         url: https://sdk.operatorframework.io/docs/overview/
@@ -94,10 +94,10 @@ apis:
       they can operate in.
     humanURL: https://olm.operatorframework.io/
     tags:
-      - Kubernetes
-      - Operators
-      - Lifecycle Management
       - Cloud Native
+      - Kubernetes
+      - Lifecycle Management
+      - Operators
     properties:
       - type: Documentation
         url: https://olm.operatorframework.io/docs/
@@ -116,10 +116,10 @@ apis:
       monitoring, security, and networking for use in Kubernetes clusters.
     humanURL: https://operatorhub.io/
     tags:
+      - Community
       - Kubernetes
       - Operators
       - Registry
-      - Community
     properties:
       - type: Documentation
         url: https://operatorhub.io/
@@ -133,9 +133,9 @@ apis:
       Kubernetes API.
     humanURL: https://github.com/kubernetes-sigs/controller-runtime
     tags:
-      - Kubernetes
-      - Go
       - Controllers
+      - Go
+      - Kubernetes
       - SDK
     properties:
       - type: Documentation
