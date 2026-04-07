@@ -124,7 +124,7 @@ apis:
       - type: Documentation
         url: https://operatorhub.io/
   - aid: kubernetes-operators:controller-runtime
-    name: controller-runtime
+    name: Controller-Runtime
     description: >-
       controller-runtime is a set of Go libraries for building Kubernetes
       controllers and operators. It is used by both Kubebuilder and Operator SDK
