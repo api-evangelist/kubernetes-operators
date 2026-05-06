@@ -4,111 +4,45 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Kubernetes Operators
 providerId: kubernetes-operators
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: true
 tags:
-  - Automation
-  - Cloud Native
-  - DevOps
-  - Infrastructure
-  - Kubernetes
   - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the Kubernetes Operators API surface. Captures
-  per-tier quotas, burst behavior, response signaling, and recovery semantics. Defaults are scaffold values
-  to be replaced with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
+  - Kubernetes
+  - Operators
+  - Open Source
+description: Operators interact with the Kubernetes API server as authenticated clients. There is no
+  vendor-imposed rate limit on the pattern itself; instead, rate limiting is enforced by the Kubernetes
+  API server (per-user/per-priority-level) via API Priority and Fairness (APF) and by client-side QPS/burst
+  settings configured in client-go (rest.Config).
+sources:
+  - https://kubernetes.io/docs/concepts/cluster-administration/flow-control/
+  - https://kubernetes.io/docs/reference/config-api/apiserver-flowcontrol.v1/
 responseCodes:
   throttled: 429
-  quotaExceeded: 429
   serviceUnavailable: 503
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - Kubernetes Operators
-      - Kubernetes Custom Resource Definitions
-      - Operator SDK
-      - Operator Lifecycle Manager
-      - OperatorHub
-      - Controller-Runtime
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - Kubernetes Operators
-      - Kubernetes Custom Resource Definitions
-      - Operator SDK
-      - Operator Lifecycle Manager
-      - OperatorHub
-      - Controller-Runtime
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - Kubernetes Operators
-      - Kubernetes Custom Resource Definitions
-      - Operator SDK
-      - Operator Lifecycle Manager
-      - OperatorHub
-      - Controller-Runtime
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - Kubernetes Operators
-      - Kubernetes Custom Resource Definitions
-      - Operator SDK
-      - Operator Lifecycle Manager
-      - OperatorHub
-      - Controller-Runtime
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Kubernetes Operators
-      - Kubernetes Custom Resource Definitions
-      - Operator SDK
-      - Operator Lifecycle Manager
-      - OperatorHub
-      - Controller-Runtime
+  - name: API Priority and Fairness (server-side)
+    scope: priority-level
+    metric: concurrent_requests
+    limit: 'cluster-configured PriorityLevelConfiguration concurrency shares'
+  - name: Client-side QPS / Burst (client-go)
+    scope: client
+    metric: requests_per_second
+    limit: 'rest.Config.QPS (default 5) / Burst (default 10) — operators typically tune higher'
 policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+  - name: APF flow control
+    description: The Kubernetes API server applies API Priority and Fairness; operators should set a
+      sensible UserAgent and FlowSchema to avoid starvation under load.
+  - name: Client-side throttling
+    description: client-go enforces local QPS/Burst before sending requests; operator authors raise these
+      defaults to suit reconciliation workloads.
+  - name: Backoff and resync
+    description: Use the controller-runtime / informer cache and rate-limited workqueues; do not poll
+      the API server in tight loops — rely on watches.
+  - name: Honor 429 and Retry-After
+    description: When the API server returns 429 (typically with a Retry-After), back off and respect
+      the suggested delay rather than retrying immediately.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
