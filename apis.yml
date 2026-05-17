@@ -57,7 +57,7 @@ apis:
         url: https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/
       - type: Reference
         url: https://kubernetes.io/docs/reference/kubernetes-api/extend-resources/custom-resource-definition-v1/
-      - type: Getting Started
+      - type: GettingStarted
         url: https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/
       - type: OpenAPI
         url: openapi/kubernetes-crd-openapi.yml
@@ -80,7 +80,7 @@ apis:
     properties:
       - type: Documentation
         url: https://sdk.operatorframework.io/docs/overview/
-      - type: Getting Started
+      - type: GettingStarted
         url: https://sdk.operatorframework.io/docs/building-operators/golang/tutorial/
       - type: GitHubRepository
         url: https://github.com/operator-framework/operator-sdk
@@ -103,7 +103,7 @@ apis:
         url: https://olm.operatorframework.io/docs/
       - type: GitHubRepository
         url: https://github.com/operator-framework/operator-lifecycle-manager
-      - type: Change Log
+      - type: ChangeLog
         url: https://github.com/operator-framework/operator-lifecycle-manager/releases
       - type: OpenAPI
         url: openapi/kubernetes-olm-openapi.yml
@@ -147,9 +147,9 @@ common:
     url: https://kubernetes.io
   - type: Documentation
     url: https://kubernetes.io/docs/concepts/extend-kubernetes/
-  - type: Getting Started
+  - type: GettingStarted
     url: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
-  - type: GitHub Organization
+  - type: GitHubOrganization
     url: https://github.com/operator-framework
   - type: GitHubRepository
     url: https://github.com/operator-framework/operator-sdk
@@ -157,11 +157,11 @@ common:
     url: https://kubernetes.io/blog/
   - type: Community
     url: https://kubernetes.io/community/
-  - type: Change Log
+  - type: ChangeLog
     url: https://kubernetes.io/releases/
   - type: JSONSchema
     url: json-schema/kubernetes-operator-schema.json
-  - type: JSON-LD
+  - type: JSONLD
     url: json-ld/kubernetes-operators-context.jsonld
 maintainers:
   - FN: Kin Lane
