@@ -5,7 +5,7 @@ description: >-
   Kubernetes applications that extend the Kubernetes API to create, configure,
   and manage instances of complex applications on behalf of a Kubernetes user.
 type: Index
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
   - Automation
   - Cloud Native
