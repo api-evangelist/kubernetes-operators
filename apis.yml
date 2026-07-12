@@ -143,6 +143,10 @@ apis:
       - type: GitHubRepository
         url: https://github.com/kubernetes-sigs/controller-runtime
 common:
+  - type: VulnerabilityDisclosure
+    url: security/kubernetes-operators-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/kubernetes-operators-domain-security.yml
   - type: Website
     url: https://kubernetes.io
   - type: Documentation
