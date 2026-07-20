@@ -1,5 +1,6 @@
 aid: kubernetes-operators
 name: Kubernetes Operators
+kind: topic
 description: >-
   Kubernetes Operators are a method of packaging, deploying, and managing
   Kubernetes applications that extend the Kubernetes API to create, configure,
