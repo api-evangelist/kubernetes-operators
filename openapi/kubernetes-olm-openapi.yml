@@ -1005,7 +1005,7 @@ components:
               description: Long-form markdown description of the operator.
             version:
               type: string
-              description: Semantic version of the operator. Example: 1.2.3.
+              description: "Semantic version of the operator. Example: 1.2.3."
             maturity:
               type: string
               enum:

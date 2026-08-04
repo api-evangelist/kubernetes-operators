@@ -365,7 +365,7 @@ components:
             Example: database, myapp.
         shortNames:
           type: array
-          description: Short names for the resource used by kubectl. Example: [db].
+          description: "Short names for the resource used by kubectl. Example: [db]."
           items:
             type: string
         listKind:
