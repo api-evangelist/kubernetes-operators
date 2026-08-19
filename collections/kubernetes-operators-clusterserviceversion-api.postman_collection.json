@@ -1,0 +1,742 @@
+{
+  "item": [
+    {
+      "id": "c03a9666-c0ca-4bfe-80e5-b6d6b2593011",
+      "name": "ClusterServiceVersion",
+      "description": {
+        "content": "ClusterServiceVersion resources representing the installed operator version with its deployment spec, RBAC rules, and owned CRDs.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "caef0a96-2e02-4cfd-9b5a-0e7e0baaee5f",
+          "name": "List ClusterServiceVersions in a namespace",
+          "request": {
+            "name": "List ClusterServiceVersions in a namespace",
+            "description": {
+              "content": "Returns a list of all ClusterServiceVersion resources in the specified namespace. A CSV is the primary operator manifest installed by OLM, containing the operator's deployment spec, RBAC rules, owned CRDs, and metadata.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "apis",
+                "operators.coreos.com",
+                "v1alpha1",
+                "namespaces",
+                ":namespace",
+                "clusterserviceversions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "labelSelector",
+                  "value": "<string>",
+                  "description": "Label selector to filter resources."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of items to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "watch",
+                  "value": "<boolean>",
+                  "description": "If true, stream watch events."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "namespace",
+                  "description": "(Required) Namespace name to scope the request."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8982a379-6e0b-4936-b801-a2df294dcb37",
+              "name": "List of ClusterServiceVersions",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "clusterserviceversions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "labelSelector",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "watch",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"apiVersion\": \"string\",\n      \"kind\": \"string\",\n      \"metadata\": {\n        \"name\": \"string\",\n        \"namespace\": \"string\",\n        \"uid\": \"string\",\n        \"resourceVersion\": \"string\",\n        \"creationTimestamp\": \"1975-06-22T05:50:42.404Z\",\n        \"labels\": {\n          \"key_0\": \"string\",\n          \"key_1\": \"string\"\n        },\n        \"annotations\": {\n          \"key_0\": \"string\"\n        }\n      },\n      \"spec\": {\n        \"displayName\": \"string\",\n        \"description\": \"string\",\n        \"version\": \"string\",\n        \"maturity\": \"beta\",\n        \"replaces\": \"string\",\n        \"installModes\": [\n          {\n            \"type\": \"AllNamespaces\",\n            \"supported\": false\n          },\n          {\n            \"type\": \"SingleNamespace\",\n            \"supported\": true\n          }\n        ],\n        \"install\": {\n          \"strategy\": \"deployment\",\n          \"spec\": {\n            \"deployments\": [\n              {\n                \"name\": \"string\",\n                \"spec\": {}\n              },\n              {\n                \"name\": \"string\",\n                \"spec\": {}\n              }\n            ],\n            \"permissions\": [\n              {\n                \"serviceAccountName\": \"string\",\n                \"rules\": [\n                  {\n                    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n                  },\n                  {\n                    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n                  }\n                ]\n              },\n              {\n                \"serviceAccountName\": \"string\",\n                \"rules\": [\n                  {\n                    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n                  },\n                  {\n                    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n                  }\n                ]\n              }\n            ]\n          }\n        },\n        \"customresourcedefinitions\": {\n          \"owned\": [\n            {\n              \"name\": \"string\",\n              \"version\": \"string\",\n              \"kind\": \"string\",\n              \"description\": \"string\",\n              \"displayName\": \"string\"\n            },\n            {\n              \"name\": \"string\",\n              \"version\": \"string\",\n              \"kind\": \"string\",\n              \"description\": \"string\",\n              \"displayName\": \"string\"\n            }\n          ],\n          \"required\": [\n            {\n              \"name\": \"string\",\n              \"version\": \"string\",\n              \"kind\": \"string\",\n              \"description\": \"string\",\n              \"displayName\": \"string\"\n            },\n            {\n              \"name\": \"string\",\n              \"version\": \"string\",\n              \"kind\": \"string\",\n              \"description\": \"string\",\n              \"displayName\": \"string\"\n            }\n          ]\n        }\n      },\n      \"status\": {\n        \"phase\": \"InstallReady\",\n        \"conditions\": [\n          {\n            \"type\": \"string\",\n            \"status\": \"False\",\n            \"reason\": \"string\",\n            \"message\": \"string\",\n            \"lastTransitionTime\": \"2023-12-03T17:56:20.366Z\"\n          },\n          {\n            \"type\": \"string\",\n            \"status\": \"Unknown\",\n            \"reason\": \"string\",\n            \"message\": \"string\",\n            \"lastTransitionTime\": \"2025-09-23T06:53:59.148Z\"\n          }\n        ],\n        \"lastTransitionTime\": \"2017-12-22T18:39:26.500Z\"\n      }\n    },\n    {\n      \"apiVersion\": \"string\",\n      \"kind\": \"string\",\n      \"metadata\": {\n        \"name\": \"string\",\n        \"namespace\": \"string\",\n        \"uid\": \"string\",\n        \"resourceVersion\": \"string\",\n        \"creationTimestamp\": \"1981-07-03T23:11:18.712Z\",\n        \"labels\": {\n          \"key_0\": \"string\"\n        },\n        \"annotations\": {\n          \"key_0\": \"string\",\n          \"key_1\": \"string\"\n        }\n      },\n      \"spec\": {\n        \"displayName\": \"string\",\n        \"description\": \"string\",\n        \"version\": \"string\",\n        \"maturity\": \"stable\",\n        \"replaces\": \"string\",\n        \"installModes\": [\n          {\n            \"type\": \"OwnNamespace\",\n            \"supported\": false\n          },\n          {\n            \"type\": \"MultiNamespace\",\n            \"supported\": true\n          }\n        ],\n        \"install\": {\n          \"strategy\": \"deployment\",\n          \"spec\": {\n            \"deployments\": [\n              {\n                \"name\": \"string\",\n                \"spec\": {}\n              },\n              {\n                \"name\": \"string\",\n                \"spec\": {}\n              }\n            ],\n            \"permissions\": [\n              {\n                \"serviceAccountName\": \"string\",\n                \"rules\": [\n                  {\n                    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n                  },\n                  {\n                    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n                  }\n                ]\n              },\n              {\n                \"serviceAccountName\": \"string\",\n                \"rules\": [\n                  {\n                    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n                  },\n                  {\n                    \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n                  }\n                ]\n              }\n            ]\n          }\n        },\n        \"customresourcedefinitions\": {\n          \"owned\": [\n            {\n              \"name\": \"string\",\n              \"version\": \"string\",\n              \"kind\": \"string\",\n              \"description\": \"string\",\n              \"displayName\": \"string\"\n            },\n            {\n              \"name\": \"string\",\n              \"version\": \"string\",\n              \"kind\": \"string\",\n              \"description\": \"string\",\n              \"displayName\": \"string\"\n            }\n          ],\n          \"required\": [\n            {\n              \"name\": \"string\",\n              \"version\": \"string\",\n              \"kind\": \"string\",\n              \"description\": \"string\",\n              \"displayName\": \"string\"\n            },\n            {\n              \"name\": \"string\",\n              \"version\": \"string\",\n              \"kind\": \"string\",\n              \"description\": \"string\",\n              \"displayName\": \"string\"\n            }\n          ]\n        }\n      },\n      \"status\": {\n        \"phase\": \"Failed\",\n        \"conditions\": [\n          {\n            \"type\": \"string\",\n            \"status\": \"Unknown\",\n            \"reason\": \"string\",\n            \"message\": \"string\",\n            \"lastTransitionTime\": \"1951-04-21T06:14:37.839Z\"\n          },\n          {\n            \"type\": \"string\",\n            \"status\": \"Unknown\",\n            \"reason\": \"string\",\n            \"message\": \"string\",\n            \"lastTransitionTime\": \"2009-08-13T13:54:10.661Z\"\n          }\n        ],\n        \"lastTransitionTime\": \"1977-12-26T20:23:58.866Z\"\n      }\n    }\n  ],\n  \"apiVersion\": \"string\",\n  \"kind\": \"string\",\n  \"metadata\": {\n    \"resourceVersion\": \"string\",\n    \"continue\": \"string\",\n    \"remainingItemCount\": 8126\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2f49d216-8437-4ccb-a045-07a90dd38533",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "clusterserviceversions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "labelSelector",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "watch",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 91,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Success\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1599cabd-5963-4743-9247-a0d43b76bed5",
+          "name": "Get a ClusterServiceVersion",
+          "request": {
+            "name": "Get a ClusterServiceVersion",
+            "description": {
+              "content": "Returns the specified ClusterServiceVersion including the operator deployment spec, RBAC permissions, owned and required CRDs, install modes, and current phase (Installing, Succeeded, Failed).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "apis",
+                "operators.coreos.com",
+                "v1alpha1",
+                "namespaces",
+                ":namespace",
+                "clusterserviceversions",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "namespace",
+                  "description": "(Required) Namespace name to scope the request."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Name of the OLM resource."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "43609980-9e4b-4ee1-9b96-2f4eabdd5221",
+              "name": "ClusterServiceVersion details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "clusterserviceversions",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"apiVersion\": \"string\",\n  \"kind\": \"string\",\n  \"metadata\": {\n    \"name\": \"string\",\n    \"namespace\": \"string\",\n    \"uid\": \"string\",\n    \"resourceVersion\": \"string\",\n    \"creationTimestamp\": \"1979-06-12T03:57:04.159Z\",\n    \"labels\": {\n      \"key_0\": \"string\"\n    },\n    \"annotations\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\",\n      \"key_2\": \"string\",\n      \"key_3\": \"string\"\n    }\n  },\n  \"spec\": {\n    \"displayName\": \"string\",\n    \"description\": \"string\",\n    \"version\": \"string\",\n    \"maturity\": \"beta\",\n    \"replaces\": \"string\",\n    \"installModes\": [\n      {\n        \"type\": \"MultiNamespace\",\n        \"supported\": true\n      },\n      {\n        \"type\": \"SingleNamespace\",\n        \"supported\": true\n      }\n    ],\n    \"install\": {\n      \"strategy\": \"deployment\",\n      \"spec\": {\n        \"deployments\": [\n          {\n            \"name\": \"string\",\n            \"spec\": {}\n          },\n          {\n            \"name\": \"string\",\n            \"spec\": {}\n          }\n        ],\n        \"permissions\": [\n          {\n            \"serviceAccountName\": \"string\"\n          },\n          {\n            \"serviceAccountName\": \"string\"\n          }\n        ]\n      }\n    },\n    \"customresourcedefinitions\": {\n      \"owned\": [\n        {\n          \"name\": \"string\",\n          \"version\": \"string\",\n          \"kind\": \"string\",\n          \"description\": \"string\",\n          \"displayName\": \"string\"\n        },\n        {\n          \"name\": \"string\",\n          \"version\": \"string\",\n          \"kind\": \"string\",\n          \"description\": \"string\",\n          \"displayName\": \"string\"\n        }\n      ],\n      \"required\": [\n        {\n          \"name\": \"string\",\n          \"version\": \"string\",\n          \"kind\": \"string\",\n          \"description\": \"string\",\n          \"displayName\": \"string\"\n        },\n        {\n          \"name\": \"string\",\n          \"version\": \"string\",\n          \"kind\": \"string\",\n          \"description\": \"string\",\n          \"displayName\": \"string\"\n        }\n      ]\n    }\n  },\n  \"status\": {\n    \"phase\": \"Unknown\",\n    \"conditions\": [\n      {\n        \"type\": \"string\",\n        \"status\": \"True\",\n        \"reason\": \"string\",\n        \"message\": \"string\",\n        \"lastTransitionTime\": \"1979-07-08T17:44:08.240Z\"\n      },\n      {\n        \"type\": \"string\",\n        \"status\": \"Unknown\",\n        \"reason\": \"string\",\n        \"message\": \"string\",\n        \"lastTransitionTime\": \"1963-10-19T15:08:36.187Z\"\n      }\n    ],\n    \"lastTransitionTime\": \"2000-06-08T01:01:43.617Z\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "25079f99-83f8-43b9-bd79-64845a44f108",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "clusterserviceversions",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 91,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Success\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4b6e967d-9e70-4b5a-b552-3897a9e67352",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "clusterserviceversions",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 91,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Success\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cf71da6f-f9c5-4775-a71b-d448fafb0384",
+          "name": "Delete a ClusterServiceVersion",
+          "request": {
+            "name": "Delete a ClusterServiceVersion",
+            "description": {
+              "content": "Deletes the specified ClusterServiceVersion, uninstalling the operator. OLM removes the operator's deployment and RBAC resources. Custom resources managed by the operator are not automatically deleted.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "apis",
+                "operators.coreos.com",
+                "v1alpha1",
+                "namespaces",
+                ":namespace",
+                "clusterserviceversions",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "namespace",
+                  "description": "(Required) Namespace name to scope the request."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Name of the OLM resource."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "820c1ed9-ee13-4296-88a4-a3f682840caf",
+              "name": "ClusterServiceVersion deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "clusterserviceversions",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"apiVersion\": \"string\",\n  \"kind\": \"string\",\n  \"metadata\": {\n    \"name\": \"string\",\n    \"namespace\": \"string\",\n    \"uid\": \"string\",\n    \"resourceVersion\": \"string\",\n    \"creationTimestamp\": \"1979-06-12T03:57:04.159Z\",\n    \"labels\": {\n      \"key_0\": \"string\"\n    },\n    \"annotations\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\",\n      \"key_2\": \"string\",\n      \"key_3\": \"string\"\n    }\n  },\n  \"spec\": {\n    \"displayName\": \"string\",\n    \"description\": \"string\",\n    \"version\": \"string\",\n    \"maturity\": \"beta\",\n    \"replaces\": \"string\",\n    \"installModes\": [\n      {\n        \"type\": \"MultiNamespace\",\n        \"supported\": true\n      },\n      {\n        \"type\": \"SingleNamespace\",\n        \"supported\": true\n      }\n    ],\n    \"install\": {\n      \"strategy\": \"deployment\",\n      \"spec\": {\n        \"deployments\": [\n          {\n            \"name\": \"string\",\n            \"spec\": {}\n          },\n          {\n            \"name\": \"string\",\n            \"spec\": {}\n          }\n        ],\n        \"permissions\": [\n          {\n            \"serviceAccountName\": \"string\"\n          },\n          {\n            \"serviceAccountName\": \"string\"\n          }\n        ]\n      }\n    },\n    \"customresourcedefinitions\": {\n      \"owned\": [\n        {\n          \"name\": \"string\",\n          \"version\": \"string\",\n          \"kind\": \"string\",\n          \"description\": \"string\",\n          \"displayName\": \"string\"\n        },\n        {\n          \"name\": \"string\",\n          \"version\": \"string\",\n          \"kind\": \"string\",\n          \"description\": \"string\",\n          \"displayName\": \"string\"\n        }\n      ],\n      \"required\": [\n        {\n          \"name\": \"string\",\n          \"version\": \"string\",\n          \"kind\": \"string\",\n          \"description\": \"string\",\n          \"displayName\": \"string\"\n        },\n        {\n          \"name\": \"string\",\n          \"version\": \"string\",\n          \"kind\": \"string\",\n          \"description\": \"string\",\n          \"displayName\": \"string\"\n        }\n      ]\n    }\n  },\n  \"status\": {\n    \"phase\": \"Unknown\",\n    \"conditions\": [\n      {\n        \"type\": \"string\",\n        \"status\": \"True\",\n        \"reason\": \"string\",\n        \"message\": \"string\",\n        \"lastTransitionTime\": \"1979-07-08T17:44:08.240Z\"\n      },\n      {\n        \"type\": \"string\",\n        \"status\": \"Unknown\",\n        \"reason\": \"string\",\n        \"message\": \"string\",\n        \"lastTransitionTime\": \"1963-10-19T15:08:36.187Z\"\n      }\n    ],\n    \"lastTransitionTime\": \"2000-06-08T01:01:43.617Z\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e9605e18-bb47-4e37-84c4-bdadf05a6509",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "clusterserviceversions",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 91,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Success\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fdddb466-d830-40ef-b063-c294a56b41d6",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "clusterserviceversions",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 91,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Success\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://kubernetes.default.svc",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "eca30d4c-cc45-4194-9530-eee14ffed31d",
+    "name": "Operator Lifecycle Manager Cluster Service Version API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster. OLM provides resources including CatalogSource for operator registries, OperatorGroup for namespace scoping, Subscription for tracking desired operator versions and channels, InstallPlan for reviewing pending installations, and ClusterServiceVersion as the primary operator manifest defining runtime components and RBAC rules.\n\nContact Support:\n Name: Operator Framework Community",
+      "type": "text/plain"
+    }
+  }
+}

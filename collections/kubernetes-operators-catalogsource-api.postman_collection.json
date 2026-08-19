@@ -1,0 +1,1280 @@
+{
+  "item": [
+    {
+      "id": "2e376f98-1573-4091-a0e8-2fcc49077650",
+      "name": "CatalogSource",
+      "description": {
+        "content": "CatalogSource resources pointing to operator registries (gRPC or ConfigMap-backed) that OLM queries for available operators and versions.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d57cf01f-28b1-4b85-8067-c9b71a3c067b",
+          "name": "List CatalogSources in a namespace",
+          "request": {
+            "name": "List CatalogSources in a namespace",
+            "description": {
+              "content": "Returns a list of all CatalogSource resources in the specified namespace. CatalogSources point to operator registries from which OLM can discover available operators, versions, and channels.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "apis",
+                "operators.coreos.com",
+                "v1alpha1",
+                "namespaces",
+                ":namespace",
+                "catalogsources"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "labelSelector",
+                  "value": "<string>",
+                  "description": "Label selector to filter resources."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of items to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "watch",
+                  "value": "<boolean>",
+                  "description": "If true, stream watch events."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "namespace",
+                  "description": "(Required) Namespace name to scope the request."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c76ee368-a095-448e-b0a8-c8be0213ce97",
+              "name": "List of CatalogSources",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "labelSelector",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "watch",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"apiVersion\": \"string\",\n      \"kind\": \"string\",\n      \"metadata\": {\n        \"name\": \"string\",\n        \"namespace\": \"string\",\n        \"uid\": \"string\",\n        \"resourceVersion\": \"string\",\n        \"creationTimestamp\": \"1975-06-22T17:56:40.953Z\",\n        \"labels\": {\n          \"key_0\": \"string\"\n        },\n        \"annotations\": {\n          \"key_0\": \"string\",\n          \"key_1\": \"string\",\n          \"key_2\": \"string\"\n        }\n      },\n      \"spec\": {\n        \"sourceType\": \"internal\",\n        \"displayName\": \"string\",\n        \"image\": \"string\",\n        \"address\": \"string\",\n        \"publisher\": \"string\",\n        \"description\": \"string\",\n        \"updateStrategy\": {\n          \"registryPoll\": {\n            \"interval\": \"string\"\n          }\n        }\n      },\n      \"status\": {\n        \"connectionState\": {\n          \"address\": \"string\",\n          \"lastConnect\": \"1999-05-30T11:56:28.180Z\",\n          \"lastObservedState\": \"string\"\n        },\n        \"registryService\": {\n          \"serviceName\": \"string\",\n          \"serviceNamespace\": \"string\",\n          \"port\": \"string\"\n        }\n      }\n    },\n    {\n      \"apiVersion\": \"string\",\n      \"kind\": \"string\",\n      \"metadata\": {\n        \"name\": \"string\",\n        \"namespace\": \"string\",\n        \"uid\": \"string\",\n        \"resourceVersion\": \"string\",\n        \"creationTimestamp\": \"2005-11-20T10:39:32.676Z\",\n        \"labels\": {\n          \"key_0\": \"string\",\n          \"key_1\": \"string\",\n          \"key_2\": \"string\"\n        },\n        \"annotations\": {\n          \"key_0\": \"string\"\n        }\n      },\n      \"spec\": {\n        \"sourceType\": \"grpc\",\n        \"displayName\": \"string\",\n        \"image\": \"string\",\n        \"address\": \"string\",\n        \"publisher\": \"string\",\n        \"description\": \"string\",\n        \"updateStrategy\": {\n          \"registryPoll\": {\n            \"interval\": \"string\"\n          }\n        }\n      },\n      \"status\": {\n        \"connectionState\": {\n          \"address\": \"string\",\n          \"lastConnect\": \"1982-06-10T23:37:17.792Z\",\n          \"lastObservedState\": \"string\"\n        },\n        \"registryService\": {\n          \"serviceName\": \"string\",\n          \"serviceNamespace\": \"string\",\n          \"port\": \"string\"\n        }\n      }\n    }\n  ],\n  \"apiVersion\": \"string\",\n  \"kind\": \"string\",\n  \"metadata\": {\n    \"resourceVersion\": \"string\",\n    \"continue\": \"string\",\n    \"remainingItemCount\": 8428\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "33e588d7-a5c9-4608-8790-383c42fb07d6",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "labelSelector",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "watch",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 9600,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "87985611-b19f-41a3-a6a9-75d62148311c",
+          "name": "Create a CatalogSource",
+          "request": {
+            "name": "Create a CatalogSource",
+            "description": {
+              "content": "Creates a new CatalogSource in the specified namespace. OLM will connect to the registry and begin indexing available operators, making them discoverable for Subscription creation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "apis",
+                "operators.coreos.com",
+                "v1alpha1",
+                "namespaces",
+                ":namespace",
+                "catalogsources"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "namespace",
+                  "description": "(Required) Namespace name to scope the request."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\",\n      \"key_3\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6701f8ca-578d-4602-b94c-148246643d62",
+              "name": "CatalogSource created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3a00bbd6-1cda-42d8-a39a-c1249e2eb2ee",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 9600,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fc897822-cd61-40dc-b4f4-8a15aa28861a",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 9600,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "975baad4-fde1-435c-af3b-df8a6bc815b2",
+          "name": "Get a CatalogSource",
+          "request": {
+            "name": "Get a CatalogSource",
+            "description": {
+              "content": "Returns the specified CatalogSource including its type, registry connection details, update interval, and connectivity status.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "apis",
+                "operators.coreos.com",
+                "v1alpha1",
+                "namespaces",
+                ":namespace",
+                "catalogsources",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "namespace",
+                  "description": "(Required) Namespace name to scope the request."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Name of the OLM resource."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cfc2401b-69b0-4283-b7f4-841c1d1d50dc",
+              "name": "CatalogSource details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba247a3d-9a37-42a3-bdc1-fd761ca7dd45",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 9600,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5283530b-a2c5-4aeb-8ce0-0e7ddea636b6",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 9600,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d0761b70-6d4e-41ae-9cf3-52b2f6963c13",
+          "name": "Replace a CatalogSource",
+          "request": {
+            "name": "Replace a CatalogSource",
+            "description": {
+              "content": "Replaces the full specification of the specified CatalogSource. Used to update the registry image or address when a new catalog image is published.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "apis",
+                "operators.coreos.com",
+                "v1alpha1",
+                "namespaces",
+                ":namespace",
+                "catalogsources",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "namespace",
+                  "description": "(Required) Namespace name to scope the request."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Name of the OLM resource."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\",\n      \"key_3\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8984a9a2-87d4-4d02-9799-4d649f247571",
+              "name": "CatalogSource updated",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aa6433d8-eb13-4918-afef-d7553ce06a6e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 9600,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "74b8ce94-543a-43c4-9010-2ab1ece8cd8c",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 9600,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a04b7f39-4117-4215-a8bc-12794f6be579",
+          "name": "Delete a CatalogSource",
+          "request": {
+            "name": "Delete a CatalogSource",
+            "description": {
+              "content": "Deletes the specified CatalogSource. Subscriptions referencing this catalog will no longer receive updates, but existing installed operators are not affected.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "apis",
+                "operators.coreos.com",
+                "v1alpha1",
+                "namespaces",
+                ":namespace",
+                "catalogsources",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "namespace",
+                  "description": "(Required) Namespace name to scope the request."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Name of the OLM resource."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d1f98ca0-365f-43be-86ec-c5dedf4a5fa2",
+              "name": "CatalogSource deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"namespace\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"sourceType\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"image\": \"<string>\",\n    \"address\": \"<string>\",\n    \"publisher\": \"<string>\",\n    \"description\": \"<string>\",\n    \"updateStrategy\": {\n      \"registryPoll\": {\n        \"interval\": \"<string>\"\n      }\n    }\n  },\n  \"status\": {\n    \"connectionState\": {\n      \"address\": \"<string>\",\n      \"lastConnect\": \"<dateTime>\",\n      \"lastObservedState\": \"<string>\"\n    },\n    \"registryService\": {\n      \"serviceName\": \"<string>\",\n      \"serviceNamespace\": \"<string>\",\n      \"port\": \"<string>\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4a9d13f-7f80-417f-b176-de66928518e7",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 9600,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1466b4f7-fffb-487f-a3f0-8d60959c5b96",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "operators.coreos.com",
+                    "v1alpha1",
+                    "namespaces",
+                    ":namespace",
+                    "catalogsources",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "namespace",
+                      "description": "(Required) Namespace name to scope the request."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the OLM resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 9600,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://kubernetes.default.svc",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "cce8cdab-f7b1-48a9-985c-2a4a3a2e22e0",
+    "name": "Operator Lifecycle Manager Catalog Source API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster. OLM provides resources including CatalogSource for operator registries, OperatorGroup for namespace scoping, Subscription for tracking desired operator versions and channels, InstallPlan for reviewing pending installations, and ClusterServiceVersion as the primary operator manifest defining runtime components and RBAC rules.\n\nContact Support:\n Name: Operator Framework Community",
+      "type": "text/plain"
+    }
+  }
+}

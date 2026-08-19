@@ -1,0 +1,321 @@
+openapi: 3.2.0
+info:
+  title: Operator Lifecycle Manager Install Plan API
+  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster. OLM provides resources including CatalogSource for operator registries, OperatorGroup for namespace scoping, Subscription for tracking desired operator versions and channels, InstallPlan for reviewing pending installations, and ClusterServiceVersion as the primary operator manifest defining runtime components and RBAC rules.
+  version: 0.28.0
+  contact:
+    name: Operator Framework Community
+    url: https://github.com/operator-framework/operator-lifecycle-manager
+  termsOfService: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://kubernetes.default.svc
+  description: In-cluster Kubernetes API Server (OLM resources served as CRDs)
+security:
+- bearerAuth: []
+- clientCertificate: []
+tags:
+- name: InstallPlan
+  description: InstallPlan resources listing the set of resources OLM will create to install or upgrade an operator, pending admin approval if required.
+paths:
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/installplans:
+    get:
+      operationId: listNamespacedInstallPlans
+      summary: List InstallPlans in a namespace
+      description: Returns a list of all InstallPlan resources in the specified namespace. InstallPlans list the resources OLM will create to install or upgrade an operator. Manual approval plans require an admin to approve them before installation proceeds.
+      tags:
+      - InstallPlan
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/LabelSelector'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/Watch'
+      responses:
+        '200':
+          description: List of InstallPlans
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallPlanList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/installplans/{name}:
+    get:
+      operationId: getNamespacedInstallPlan
+      summary: Get an InstallPlan
+      description: Returns the specified InstallPlan including the list of ClusterServiceVersions and CRDs to be installed, the approval status, and the plan steps.
+      tags:
+      - InstallPlan
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: InstallPlan details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallPlan'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: patchNamespacedInstallPlan
+      summary: Approve an InstallPlan
+      description: Patches the specified InstallPlan to approve it when the approval mode is Manual. Set spec.approved=true to allow OLM to proceed with installation.
+      tags:
+      - InstallPlan
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              type: object
+              properties:
+                spec:
+                  type: object
+                  properties:
+                    approved:
+                      type: boolean
+                      description: Set to true to approve the InstallPlan.
+      responses:
+        '200':
+          description: InstallPlan patched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallPlan'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
+      schema:
+        type: string
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
+    NameParam:
+      name: name
+      in: path
+      required: true
+      description: Name of the OLM resource.
+      schema:
+        type: string
+    Watch:
+      name: watch
+      in: query
+      description: If true, stream watch events.
+      schema:
+        type: boolean
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+  schemas:
+    InstallPlan:
+      type: object
+      description: An InstallPlan is generated by OLM to represent the set of resources that will be created to install or upgrade an operator. When manual approval is required, an admin must set spec.approved=true to proceed.
+      properties:
+        apiVersion:
+          type: string
+          const: operators.coreos.com/v1alpha1
+        kind:
+          type: string
+          const: InstallPlan
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          type: object
+          description: InstallPlan specification.
+          properties:
+            clusterServiceVersionNames:
+              type: array
+              description: CSV names to be installed by this plan.
+              items:
+                type: string
+            approval:
+              type: string
+              enum:
+              - Automatic
+              - Manual
+              description: Approval mode for this InstallPlan.
+            approved:
+              type: boolean
+              description: Whether the plan has been approved. Set to true to approve a Manual plan and allow OLM to proceed.
+        status:
+          type: object
+          properties:
+            phase:
+              type: string
+              enum:
+              - Installing
+              - Complete
+              - Failed
+              description: Current phase of the install plan.
+            conditions:
+              type: array
+              items:
+                $ref: '#/components/schemas/Condition'
+            plan:
+              type: array
+              description: List of steps in the installation plan.
+              items:
+                type: object
+                properties:
+                  resolving:
+                    type: string
+                    description: CSV this step is being resolved from.
+                  resource:
+                    type: object
+                    description: Resource to be created by this step.
+                    properties:
+                      group:
+                        type: string
+                      version:
+                        type: string
+                      kind:
+                        type: string
+                      name:
+                        type: string
+                      manifest:
+                        type: string
+                        description: YAML manifest for the resource.
+                  status:
+                    type: string
+                    enum:
+                    - Created
+                    - Present
+                    - WaitingForAPI
+                    - Unknown
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+    Condition:
+      type: object
+      description: A condition expressing an aspect of current resource state.
+      required:
+      - type
+      - status
+      properties:
+        type:
+          type: string
+          description: Type of condition.
+        status:
+          type: string
+          enum:
+          - 'True'
+          - 'False'
+          - Unknown
+        reason:
+          type: string
+          description: Machine-readable reason.
+        message:
+          type: string
+          description: Human-readable details.
+        lastTransitionTime:
+          type: string
+          format: date-time
+    Status:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+          enum:
+          - Success
+          - Failure
+    ListMeta:
+      type: object
+      properties:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
+          type: integer
+    InstallPlanList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: InstallPlanList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallPlan'
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Kubernetes service account or user bearer token.
+    clientCertificate:
+      type: mutualTLS
+      description: Client TLS certificate signed by the cluster CA.
+externalDocs:
+  description: Operator Lifecycle Manager Documentation
+  url: https://olm.operatorframework.io/docs/

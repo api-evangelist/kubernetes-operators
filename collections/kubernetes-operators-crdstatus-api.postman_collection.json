@@ -1,0 +1,510 @@
+{
+  "item": [
+    {
+      "id": "2f922bcd-9343-4603-8916-553e882d28ef",
+      "name": "CRDStatus",
+      "description": {
+        "content": "Status subresource operations for CRDs reporting acceptance and establishment conditions.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "12bf7eab-aa69-4455-a7d6-3cf41ff9041b",
+          "name": "Get CRD status",
+          "request": {
+            "name": "Get CRD status",
+            "description": {
+              "content": "Returns the status subresource of the specified CustomResourceDefinition, including the Established, NamesAccepted, and Terminating conditions and the list of stored versions.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "apis",
+                "apiextensions.k8s.io",
+                "v1",
+                "customresourcedefinitions",
+                ":name",
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Name of the CRD in the format {plural}.{group} (e.g. databases.example.com)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "093c245a-5866-4ade-ba4d-fe4d215c6a4f",
+              "name": "CRD status",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "apiextensions.k8s.io",
+                    "v1",
+                    "customresourcedefinitions",
+                    ":name",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the CRD in the format {plural}.{group} (e.g. databases.example.com)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"apiVersion\": \"string\",\n  \"kind\": \"string\",\n  \"metadata\": {\n    \"name\": \"string\",\n    \"uid\": \"string\",\n    \"resourceVersion\": \"string\",\n    \"generation\": 7142,\n    \"creationTimestamp\": \"2025-05-06T12:02:16.334Z\",\n    \"labels\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\",\n      \"key_2\": \"string\",\n      \"key_3\": \"string\"\n    },\n    \"annotations\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    }\n  },\n  \"spec\": {\n    \"group\": \"ch3\",\n    \"names\": {\n      \"kind\": \"DpPQug\",\n      \"plural\": \"zych0\",\n      \"singular\": \"string\",\n      \"shortNames\": [\n        \"string\",\n        \"string\"\n      ],\n      \"listKind\": \"string\",\n      \"categories\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    \"scope\": \"Namespaced\",\n    \"versions\": [\n      {\n        \"name\": \"v989955871\",\n        \"served\": true,\n        \"storage\": true,\n        \"deprecated\": false,\n        \"deprecationWarning\": \"string\",\n        \"schema\": {\n          \"openAPIV3Schema\": {}\n        },\n        \"additionalPrinterColumns\": [\n          {\n            \"name\": \"string\",\n            \"type\": \"boolean\",\n            \"jsonPath\": \"string\",\n            \"format\": \"string\",\n            \"description\": \"string\",\n            \"priority\": 9082\n          },\n          {\n            \"name\": \"string\",\n            \"type\": \"integer\",\n            \"jsonPath\": \"string\",\n            \"format\": \"string\",\n            \"description\": \"string\",\n            \"priority\": 5570\n          }\n        ],\n        \"subresources\": {\n          \"status\": {},\n          \"scale\": {\n            \"specReplicasPath\": \"string\",\n            \"statusReplicasPath\": \"string\"\n          }\n        }\n      }\n    ],\n    \"conversion\": {\n      \"strategy\": \"None\",\n      \"webhook\": {\n        \"conversionReviewVersions\": [\n          \"string\",\n          \"string\"\n        ],\n        \"clientConfig\": {\n          \"url\": \"http://jjVERN.vsUo.GzIAKwZPUFl\",\n          \"service\": {}\n        }\n      }\n    }\n  },\n  \"status\": {\n    \"conditions\": [\n      {\n        \"type\": \"NonStructuralSchema\",\n        \"status\": \"True\",\n        \"reason\": \"string\",\n        \"message\": \"string\",\n        \"lastTransitionTime\": \"1959-11-22T19:47:41.226Z\"\n      },\n      {\n        \"type\": \"KubernetesAPIApprovalPolicyConformant\",\n        \"status\": \"False\",\n        \"reason\": \"string\",\n        \"message\": \"string\",\n        \"lastTransitionTime\": \"2014-02-01T21:59:50.572Z\"\n      }\n    ],\n    \"acceptedNames\": {\n      \"kind\": \"SKXza7d\",\n      \"plural\": \"bft5oeufvvi\",\n      \"singular\": \"string\",\n      \"shortNames\": [\n        \"string\",\n        \"string\"\n      ],\n      \"listKind\": \"string\",\n      \"categories\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    \"storedVersions\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "586455bf-4007-42e2-ad14-c8e297db6a99",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "apiextensions.k8s.io",
+                    "v1",
+                    "customresourcedefinitions",
+                    ":name",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the CRD in the format {plural}.{group} (e.g. databases.example.com)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1324,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e3ff857f-ed09-4e0d-8240-462ebb928deb",
+              "name": "CRD not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "apiextensions.k8s.io",
+                    "v1",
+                    "customresourcedefinitions",
+                    ":name",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the CRD in the format {plural}.{group} (e.g. databases.example.com)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1324,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f30492ea-66f9-49dc-80a7-738528480b34",
+          "name": "Replace CRD status",
+          "request": {
+            "name": "Replace CRD status",
+            "description": {
+              "content": "Replaces the status subresource of the specified CRD. Used by the apiextensions controller to report whether the CRD has been established and names have been accepted.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "apis",
+                "apiextensions.k8s.io",
+                "v1",
+                "customresourcedefinitions",
+                ":name",
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Name of the CRD in the format {plural}.{group} (e.g. databases.example.com)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"generation\": \"<integer>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\",\n      \"key_3\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"group\": \"<string>\",\n    \"names\": {\n      \"kind\": \"<string>\",\n      \"plural\": \"<string>\",\n      \"singular\": \"<string>\",\n      \"shortNames\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"listKind\": \"<string>\",\n      \"categories\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"scope\": \"<string>\",\n    \"versions\": [\n      {\n        \"name\": \"<string>\",\n        \"served\": \"<boolean>\",\n        \"storage\": \"<boolean>\",\n        \"deprecated\": false,\n        \"deprecationWarning\": \"<string>\",\n        \"schema\": {\n          \"openAPIV3Schema\": \"<object>\"\n        },\n        \"additionalPrinterColumns\": [\n          {\n            \"name\": \"<string>\",\n            \"type\": \"<string>\",\n            \"jsonPath\": \"<string>\",\n            \"format\": \"<string>\",\n            \"description\": \"<string>\",\n            \"priority\": \"<integer>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"type\": \"<string>\",\n            \"jsonPath\": \"<string>\",\n            \"format\": \"<string>\",\n            \"description\": \"<string>\",\n            \"priority\": \"<integer>\"\n          }\n        ],\n        \"subresources\": {\n          \"status\": \"<object>\",\n          \"scale\": {\n            \"specReplicasPath\": \"<string>\",\n            \"statusReplicasPath\": \"<string>\"\n          }\n        }\n      }\n    ],\n    \"conversion\": {\n      \"strategy\": \"<string>\",\n      \"webhook\": {\n        \"conversionReviewVersions\": [\n          \"<string>\",\n          \"<string>\"\n        ],\n        \"clientConfig\": {\n          \"url\": \"<uri>\",\n          \"service\": \"<object>\"\n        }\n      }\n    }\n  },\n  \"status\": {\n    \"conditions\": [\n      {\n        \"type\": \"<string>\",\n        \"status\": \"<string>\",\n        \"reason\": \"<string>\",\n        \"message\": \"<string>\",\n        \"lastTransitionTime\": \"<dateTime>\"\n      },\n      {\n        \"type\": \"<string>\",\n        \"status\": \"<string>\",\n        \"reason\": \"<string>\",\n        \"message\": \"<string>\",\n        \"lastTransitionTime\": \"<dateTime>\"\n      }\n    ],\n    \"acceptedNames\": {\n      \"kind\": \"<string>\",\n      \"plural\": \"<string>\",\n      \"singular\": \"<string>\",\n      \"shortNames\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"listKind\": \"<string>\",\n      \"categories\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"storedVersions\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e6211fae-67fa-4460-9dac-5f5b0840a4a6",
+              "name": "CRD status updated",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "apiextensions.k8s.io",
+                    "v1",
+                    "customresourcedefinitions",
+                    ":name",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the CRD in the format {plural}.{group} (e.g. databases.example.com)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"generation\": \"<integer>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"group\": \"<string>\",\n    \"names\": {\n      \"kind\": \"<string>\",\n      \"plural\": \"<string>\",\n      \"singular\": \"<string>\",\n      \"shortNames\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"listKind\": \"<string>\",\n      \"categories\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"scope\": \"<string>\",\n    \"versions\": [\n      {\n        \"name\": \"<string>\",\n        \"served\": \"<boolean>\",\n        \"storage\": \"<boolean>\",\n        \"deprecated\": false,\n        \"deprecationWarning\": \"<string>\",\n        \"schema\": {\n          \"openAPIV3Schema\": \"<object>\"\n        },\n        \"additionalPrinterColumns\": [\n          {\n            \"name\": \"<string>\",\n            \"type\": \"<string>\",\n            \"jsonPath\": \"<string>\",\n            \"format\": \"<string>\",\n            \"description\": \"<string>\",\n            \"priority\": \"<integer>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"type\": \"<string>\",\n            \"jsonPath\": \"<string>\",\n            \"format\": \"<string>\",\n            \"description\": \"<string>\",\n            \"priority\": \"<integer>\"\n          }\n        ],\n        \"subresources\": {\n          \"status\": \"<object>\",\n          \"scale\": {\n            \"specReplicasPath\": \"<string>\",\n            \"statusReplicasPath\": \"<string>\"\n          }\n        }\n      }\n    ],\n    \"conversion\": {\n      \"strategy\": \"<string>\",\n      \"webhook\": {\n        \"conversionReviewVersions\": [\n          \"<string>\",\n          \"<string>\"\n        ],\n        \"clientConfig\": {\n          \"url\": \"<uri>\",\n          \"service\": \"<object>\"\n        }\n      }\n    }\n  },\n  \"status\": {\n    \"conditions\": [\n      {\n        \"type\": \"<string>\",\n        \"status\": \"<string>\",\n        \"reason\": \"<string>\",\n        \"message\": \"<string>\",\n        \"lastTransitionTime\": \"<dateTime>\"\n      },\n      {\n        \"type\": \"<string>\",\n        \"status\": \"<string>\",\n        \"reason\": \"<string>\",\n        \"message\": \"<string>\",\n        \"lastTransitionTime\": \"<dateTime>\"\n      }\n    ],\n    \"acceptedNames\": {\n      \"kind\": \"<string>\",\n      \"plural\": \"<string>\",\n      \"singular\": \"<string>\",\n      \"shortNames\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"listKind\": \"<string>\",\n      \"categories\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"storedVersions\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"generation\": \"<integer>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"group\": \"<string>\",\n    \"names\": {\n      \"kind\": \"<string>\",\n      \"plural\": \"<string>\",\n      \"singular\": \"<string>\",\n      \"shortNames\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"listKind\": \"<string>\",\n      \"categories\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"scope\": \"<string>\",\n    \"versions\": [\n      {\n        \"name\": \"<string>\",\n        \"served\": \"<boolean>\",\n        \"storage\": \"<boolean>\",\n        \"deprecated\": false,\n        \"deprecationWarning\": \"<string>\",\n        \"schema\": {\n          \"openAPIV3Schema\": \"<object>\"\n        },\n        \"additionalPrinterColumns\": [\n          {\n            \"name\": \"<string>\",\n            \"type\": \"<string>\",\n            \"jsonPath\": \"<string>\",\n            \"format\": \"<string>\",\n            \"description\": \"<string>\",\n            \"priority\": \"<integer>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"type\": \"<string>\",\n            \"jsonPath\": \"<string>\",\n            \"format\": \"<string>\",\n            \"description\": \"<string>\",\n            \"priority\": \"<integer>\"\n          }\n        ],\n        \"subresources\": {\n          \"status\": \"<object>\",\n          \"scale\": {\n            \"specReplicasPath\": \"<string>\",\n            \"statusReplicasPath\": \"<string>\"\n          }\n        }\n      }\n    ],\n    \"conversion\": {\n      \"strategy\": \"<string>\",\n      \"webhook\": {\n        \"conversionReviewVersions\": [\n          \"<string>\",\n          \"<string>\"\n        ],\n        \"clientConfig\": {\n          \"url\": \"<uri>\",\n          \"service\": \"<object>\"\n        }\n      }\n    }\n  },\n  \"status\": {\n    \"conditions\": [\n      {\n        \"type\": \"<string>\",\n        \"status\": \"<string>\",\n        \"reason\": \"<string>\",\n        \"message\": \"<string>\",\n        \"lastTransitionTime\": \"<dateTime>\"\n      },\n      {\n        \"type\": \"<string>\",\n        \"status\": \"<string>\",\n        \"reason\": \"<string>\",\n        \"message\": \"<string>\",\n        \"lastTransitionTime\": \"<dateTime>\"\n      }\n    ],\n    \"acceptedNames\": {\n      \"kind\": \"<string>\",\n      \"plural\": \"<string>\",\n      \"singular\": \"<string>\",\n      \"shortNames\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"listKind\": \"<string>\",\n      \"categories\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"storedVersions\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dc26d7a8-6090-4686-b33d-36c0682029ad",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "apiextensions.k8s.io",
+                    "v1",
+                    "customresourcedefinitions",
+                    ":name",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the CRD in the format {plural}.{group} (e.g. databases.example.com)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"generation\": \"<integer>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"group\": \"<string>\",\n    \"names\": {\n      \"kind\": \"<string>\",\n      \"plural\": \"<string>\",\n      \"singular\": \"<string>\",\n      \"shortNames\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"listKind\": \"<string>\",\n      \"categories\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"scope\": \"<string>\",\n    \"versions\": [\n      {\n        \"name\": \"<string>\",\n        \"served\": \"<boolean>\",\n        \"storage\": \"<boolean>\",\n        \"deprecated\": false,\n        \"deprecationWarning\": \"<string>\",\n        \"schema\": {\n          \"openAPIV3Schema\": \"<object>\"\n        },\n        \"additionalPrinterColumns\": [\n          {\n            \"name\": \"<string>\",\n            \"type\": \"<string>\",\n            \"jsonPath\": \"<string>\",\n            \"format\": \"<string>\",\n            \"description\": \"<string>\",\n            \"priority\": \"<integer>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"type\": \"<string>\",\n            \"jsonPath\": \"<string>\",\n            \"format\": \"<string>\",\n            \"description\": \"<string>\",\n            \"priority\": \"<integer>\"\n          }\n        ],\n        \"subresources\": {\n          \"status\": \"<object>\",\n          \"scale\": {\n            \"specReplicasPath\": \"<string>\",\n            \"statusReplicasPath\": \"<string>\"\n          }\n        }\n      }\n    ],\n    \"conversion\": {\n      \"strategy\": \"<string>\",\n      \"webhook\": {\n        \"conversionReviewVersions\": [\n          \"<string>\",\n          \"<string>\"\n        ],\n        \"clientConfig\": {\n          \"url\": \"<uri>\",\n          \"service\": \"<object>\"\n        }\n      }\n    }\n  },\n  \"status\": {\n    \"conditions\": [\n      {\n        \"type\": \"<string>\",\n        \"status\": \"<string>\",\n        \"reason\": \"<string>\",\n        \"message\": \"<string>\",\n        \"lastTransitionTime\": \"<dateTime>\"\n      },\n      {\n        \"type\": \"<string>\",\n        \"status\": \"<string>\",\n        \"reason\": \"<string>\",\n        \"message\": \"<string>\",\n        \"lastTransitionTime\": \"<dateTime>\"\n      }\n    ],\n    \"acceptedNames\": {\n      \"kind\": \"<string>\",\n      \"plural\": \"<string>\",\n      \"singular\": \"<string>\",\n      \"shortNames\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"listKind\": \"<string>\",\n      \"categories\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"storedVersions\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1324,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "83eca04d-701d-4cc0-8648-76ea938284c0",
+              "name": "CRD not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "apis",
+                    "apiextensions.k8s.io",
+                    "v1",
+                    "customresourcedefinitions",
+                    ":name",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the CRD in the format {plural}.{group} (e.g. databases.example.com)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"apiVersion\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"metadata\": {\n    \"name\": \"<string>\",\n    \"uid\": \"<string>\",\n    \"resourceVersion\": \"<string>\",\n    \"generation\": \"<integer>\",\n    \"creationTimestamp\": \"<dateTime>\",\n    \"labels\": {\n      \"key_0\": \"<string>\"\n    },\n    \"annotations\": {\n      \"key_0\": \"<string>\"\n    }\n  },\n  \"spec\": {\n    \"group\": \"<string>\",\n    \"names\": {\n      \"kind\": \"<string>\",\n      \"plural\": \"<string>\",\n      \"singular\": \"<string>\",\n      \"shortNames\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"listKind\": \"<string>\",\n      \"categories\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"scope\": \"<string>\",\n    \"versions\": [\n      {\n        \"name\": \"<string>\",\n        \"served\": \"<boolean>\",\n        \"storage\": \"<boolean>\",\n        \"deprecated\": false,\n        \"deprecationWarning\": \"<string>\",\n        \"schema\": {\n          \"openAPIV3Schema\": \"<object>\"\n        },\n        \"additionalPrinterColumns\": [\n          {\n            \"name\": \"<string>\",\n            \"type\": \"<string>\",\n            \"jsonPath\": \"<string>\",\n            \"format\": \"<string>\",\n            \"description\": \"<string>\",\n            \"priority\": \"<integer>\"\n          },\n          {\n            \"name\": \"<string>\",\n            \"type\": \"<string>\",\n            \"jsonPath\": \"<string>\",\n            \"format\": \"<string>\",\n            \"description\": \"<string>\",\n            \"priority\": \"<integer>\"\n          }\n        ],\n        \"subresources\": {\n          \"status\": \"<object>\",\n          \"scale\": {\n            \"specReplicasPath\": \"<string>\",\n            \"statusReplicasPath\": \"<string>\"\n          }\n        }\n      }\n    ],\n    \"conversion\": {\n      \"strategy\": \"<string>\",\n      \"webhook\": {\n        \"conversionReviewVersions\": [\n          \"<string>\",\n          \"<string>\"\n        ],\n        \"clientConfig\": {\n          \"url\": \"<uri>\",\n          \"service\": \"<object>\"\n        }\n      }\n    }\n  },\n  \"status\": {\n    \"conditions\": [\n      {\n        \"type\": \"<string>\",\n        \"status\": \"<string>\",\n        \"reason\": \"<string>\",\n        \"message\": \"<string>\",\n        \"lastTransitionTime\": \"<dateTime>\"\n      },\n      {\n        \"type\": \"<string>\",\n        \"status\": \"<string>\",\n        \"reason\": \"<string>\",\n        \"message\": \"<string>\",\n        \"lastTransitionTime\": \"<dateTime>\"\n      }\n    ],\n    \"acceptedNames\": {\n      \"kind\": \"<string>\",\n      \"plural\": \"<string>\",\n      \"singular\": \"<string>\",\n      \"shortNames\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"listKind\": \"<string>\",\n      \"categories\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"storedVersions\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1324,\n  \"message\": \"string\",\n  \"reason\": \"string\",\n  \"status\": \"Failure\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://kubernetes.default.svc",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "b4fbe6e1-423f-463f-85e7-3edc50b5075a",
+    "name": "Kubernetes Custom Resource Definitions CRD Status API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The CustomResourceDefinition (CRD) API extends the Kubernetes API by defining new resource types with custom schemas. When a CRD is created, the Kubernetes API server automatically serves and handles storage for the new custom resource type. CRDs enable operators and controllers to manage domain-specific objects using the full Kubernetes API machinery including watch, label selectors, status conditions, and garbage collection.\n\nContact Support:\n Name: Kubernetes Community",
+      "type": "text/plain"
+    }
+  }
+}

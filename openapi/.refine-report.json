@@ -1,0 +1,35 @@
+{
+  "provider": "kubernetes-operators",
+  "sources": [
+    "kubernetes-operators-catalogsource-api-openapi.yml",
+    "kubernetes-operators-clusterserviceversion-api-openapi.yml",
+    "kubernetes-operators-crdstatus-api-openapi.yml",
+    "kubernetes-operators-customresourcedefinitions-api-openapi.yml",
+    "kubernetes-operators-installplan-api-openapi.yml",
+    "kubernetes-operators-operatorgroup-api-openapi.yml",
+    "kubernetes-operators-subscription-api-openapi.yml"
+  ],
+  "outputs": [
+    "kubernetes-operators-catalogsource-api-openapi.yml",
+    "kubernetes-operators-clusterserviceversion-api-openapi.yml",
+    "kubernetes-operators-crdstatus-api-openapi.yml",
+    "kubernetes-operators-customresourcedefinitions-api-openapi.yml",
+    "kubernetes-operators-installplan-api-openapi.yml",
+    "kubernetes-operators-operatorgroup-api-openapi.yml",
+    "kubernetes-operators-subscription-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "kubernetes-operators-catalogsource-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "kubernetes-operators-clusterserviceversion-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "kubernetes-operators-crdstatus-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "kubernetes-operators-customresourcedefinitions-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "kubernetes-operators-installplan-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "kubernetes-operators-operatorgroup-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "kubernetes-operators-subscription-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": []
+}

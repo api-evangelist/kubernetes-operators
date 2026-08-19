@@ -1,0 +1,385 @@
+openapi: 3.2.0
+info:
+  title: Operator Lifecycle Manager Cluster Service Version API
+  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster. OLM provides resources including CatalogSource for operator registries, OperatorGroup for namespace scoping, Subscription for tracking desired operator versions and channels, InstallPlan for reviewing pending installations, and ClusterServiceVersion as the primary operator manifest defining runtime components and RBAC rules.
+  version: 0.28.0
+  contact:
+    name: Operator Framework Community
+    url: https://github.com/operator-framework/operator-lifecycle-manager
+  termsOfService: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://kubernetes.default.svc
+  description: In-cluster Kubernetes API Server (OLM resources served as CRDs)
+security:
+- bearerAuth: []
+- clientCertificate: []
+tags:
+- name: ClusterServiceVersion
+  description: ClusterServiceVersion resources representing the installed operator version with its deployment spec, RBAC rules, and owned CRDs.
+paths:
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/clusterserviceversions:
+    get:
+      operationId: listNamespacedClusterServiceVersions
+      summary: List ClusterServiceVersions in a namespace
+      description: Returns a list of all ClusterServiceVersion resources in the specified namespace. A CSV is the primary operator manifest installed by OLM, containing the operator's deployment spec, RBAC rules, owned CRDs, and metadata.
+      tags:
+      - ClusterServiceVersion
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/LabelSelector'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/Watch'
+      responses:
+        '200':
+          description: List of ClusterServiceVersions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterServiceVersionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/clusterserviceversions/{name}:
+    get:
+      operationId: getNamespacedClusterServiceVersion
+      summary: Get a ClusterServiceVersion
+      description: Returns the specified ClusterServiceVersion including the operator deployment spec, RBAC permissions, owned and required CRDs, install modes, and current phase (Installing, Succeeded, Failed).
+      tags:
+      - ClusterServiceVersion
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: ClusterServiceVersion details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterServiceVersion'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteNamespacedClusterServiceVersion
+      summary: Delete a ClusterServiceVersion
+      description: Deletes the specified ClusterServiceVersion, uninstalling the operator. OLM removes the operator's deployment and RBAC resources. Custom resources managed by the operator are not automatically deleted.
+      tags:
+      - ClusterServiceVersion
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: ClusterServiceVersion deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterServiceVersion'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    ClusterServiceVersion:
+      type: object
+      description: A ClusterServiceVersion is the primary OLM manifest for an installed operator version. It contains the operator's deployment spec, RBAC rules, owned and required CRDs, install modes, and lifecycle hooks.
+      properties:
+        apiVersion:
+          type: string
+          const: operators.coreos.com/v1alpha1
+        kind:
+          type: string
+          const: ClusterServiceVersion
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          type: object
+          description: ClusterServiceVersion specification.
+          properties:
+            displayName:
+              type: string
+              description: Human-readable operator name shown in OperatorHub.
+            description:
+              type: string
+              description: Long-form markdown description of the operator.
+            version:
+              type: string
+              description: 'Semantic version of the operator. Example: 1.2.3.'
+            maturity:
+              type: string
+              enum:
+              - alpha
+              - beta
+              - stable
+              description: Maturity level of the operator.
+            replaces:
+              type: string
+              description: CSV name that this version replaces during upgrade. Used by OLM to build the upgrade graph.
+            installModes:
+              type: array
+              description: List of install modes supported by the operator defining which namespace scopes are supported.
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - OwnNamespace
+                    - SingleNamespace
+                    - MultiNamespace
+                    - AllNamespaces
+                    description: Install mode type.
+                  supported:
+                    type: boolean
+                    description: Whether this install mode is supported.
+            install:
+              type: object
+              description: Install strategy defining the operator deployment.
+              properties:
+                strategy:
+                  type: string
+                  enum:
+                  - deployment
+                  description: Install strategy. Currently only deployment is supported.
+                spec:
+                  type: object
+                  description: Strategy spec containing deployment and RBAC details.
+                  properties:
+                    deployments:
+                      type: array
+                      description: Deployment specs for operator pods.
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          spec:
+                            type: object
+                            description: Kubernetes Deployment spec.
+                    permissions:
+                      type: array
+                      description: Namespace-scoped RBAC rules.
+                      items:
+                        type: object
+                        properties:
+                          serviceAccountName:
+                            type: string
+                          rules:
+                            type: array
+                            items:
+                              type: object
+                    clusterPermissions:
+                      type: array
+                      description: Cluster-scoped RBAC rules.
+                      items:
+                        type: object
+            customresourcedefinitions:
+              type: object
+              description: CRDs owned and required by this operator.
+              properties:
+                owned:
+                  type: array
+                  description: CRDs this operator manages.
+                  items:
+                    $ref: '#/components/schemas/CRDDescription'
+                required:
+                  type: array
+                  description: CRDs this operator depends on but does not manage.
+                  items:
+                    $ref: '#/components/schemas/CRDDescription'
+        status:
+          type: object
+          properties:
+            phase:
+              type: string
+              enum:
+              - Pending
+              - InstallReady
+              - Installing
+              - Succeeded
+              - Failed
+              - Unknown
+              - Replacing
+              - Deleting
+              description: Current lifecycle phase of the CSV.
+            conditions:
+              type: array
+              items:
+                $ref: '#/components/schemas/Condition'
+            lastTransitionTime:
+              type: string
+              format: date-time
+    CRDDescription:
+      type: object
+      description: Description of a CRD owned or required by an operator, used in the ClusterServiceVersion to declare the operator's CRD dependencies.
+      required:
+      - name
+      - version
+      - kind
+      properties:
+        name:
+          type: string
+          description: CRD name in {plural}.{group} format.
+        version:
+          type: string
+          description: Version of the CRD API.
+        kind:
+          type: string
+          description: Kind of the custom resource.
+        description:
+          type: string
+          description: Human-readable description of what this CRD represents.
+        displayName:
+          type: string
+          description: Human-readable display name for the CRD.
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+    Condition:
+      type: object
+      description: A condition expressing an aspect of current resource state.
+      required:
+      - type
+      - status
+      properties:
+        type:
+          type: string
+          description: Type of condition.
+        status:
+          type: string
+          enum:
+          - 'True'
+          - 'False'
+          - Unknown
+        reason:
+          type: string
+          description: Machine-readable reason.
+        message:
+          type: string
+          description: Human-readable details.
+        lastTransitionTime:
+          type: string
+          format: date-time
+    ClusterServiceVersionList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: ClusterServiceVersionList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterServiceVersion'
+    Status:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+          enum:
+          - Success
+          - Failure
+    ListMeta:
+      type: object
+      properties:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
+          type: integer
+  parameters:
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
+      schema:
+        type: string
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
+    NameParam:
+      name: name
+      in: path
+      required: true
+      description: Name of the OLM resource.
+      schema:
+        type: string
+    Watch:
+      name: watch
+      in: query
+      description: If true, stream watch events.
+      schema:
+        type: boolean
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Kubernetes service account or user bearer token.
+    clientCertificate:
+      type: mutualTLS
+      description: Client TLS certificate signed by the cluster CA.
+externalDocs:
+  description: Operator Lifecycle Manager Documentation
+  url: https://olm.operatorframework.io/docs/

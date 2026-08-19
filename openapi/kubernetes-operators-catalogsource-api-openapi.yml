@@ -1,0 +1,342 @@
+openapi: 3.2.0
+info:
+  title: Operator Lifecycle Manager Catalog Source API
+  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster. OLM provides resources including CatalogSource for operator registries, OperatorGroup for namespace scoping, Subscription for tracking desired operator versions and channels, InstallPlan for reviewing pending installations, and ClusterServiceVersion as the primary operator manifest defining runtime components and RBAC rules.
+  version: 0.28.0
+  contact:
+    name: Operator Framework Community
+    url: https://github.com/operator-framework/operator-lifecycle-manager
+  termsOfService: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://kubernetes.default.svc
+  description: In-cluster Kubernetes API Server (OLM resources served as CRDs)
+security:
+- bearerAuth: []
+- clientCertificate: []
+tags:
+- name: CatalogSource
+  description: CatalogSource resources pointing to operator registries (gRPC or ConfigMap-backed) that OLM queries for available operators and versions.
+paths:
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/catalogsources:
+    get:
+      operationId: listNamespacedCatalogSources
+      summary: List CatalogSources in a namespace
+      description: Returns a list of all CatalogSource resources in the specified namespace. CatalogSources point to operator registries from which OLM can discover available operators, versions, and channels.
+      tags:
+      - CatalogSource
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/LabelSelector'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/Watch'
+      responses:
+        '200':
+          description: List of CatalogSources
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSourceList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createNamespacedCatalogSource
+      summary: Create a CatalogSource
+      description: Creates a new CatalogSource in the specified namespace. OLM will connect to the registry and begin indexing available operators, making them discoverable for Subscription creation.
+      tags:
+      - CatalogSource
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CatalogSource'
+      responses:
+        '201':
+          description: CatalogSource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSource'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/catalogsources/{name}:
+    get:
+      operationId: getNamespacedCatalogSource
+      summary: Get a CatalogSource
+      description: Returns the specified CatalogSource including its type, registry connection details, update interval, and connectivity status.
+      tags:
+      - CatalogSource
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: CatalogSource details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: replaceNamespacedCatalogSource
+      summary: Replace a CatalogSource
+      description: Replaces the full specification of the specified CatalogSource. Used to update the registry image or address when a new catalog image is published.
+      tags:
+      - CatalogSource
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CatalogSource'
+      responses:
+        '200':
+          description: CatalogSource updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteNamespacedCatalogSource
+      summary: Delete a CatalogSource
+      description: Deletes the specified CatalogSource. Subscriptions referencing this catalog will no longer receive updates, but existing installed operators are not affected.
+      tags:
+      - CatalogSource
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: CatalogSource deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogSource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
+      schema:
+        type: string
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
+    NameParam:
+      name: name
+      in: path
+      required: true
+      description: Name of the OLM resource.
+      schema:
+        type: string
+    Watch:
+      name: watch
+      in: query
+      description: If true, stream watch events.
+      schema:
+        type: boolean
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+  schemas:
+    CatalogSourceList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: CatalogSourceList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogSource'
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+    Status:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+          enum:
+          - Success
+          - Failure
+    CatalogSource:
+      type: object
+      description: A CatalogSource points to a registry from which OLM discovers operators. It may reference a gRPC registry served by a container image, a gRPC address, or a ConfigMap-backed in-cluster registry.
+      properties:
+        apiVersion:
+          type: string
+          const: operators.coreos.com/v1alpha1
+        kind:
+          type: string
+          const: CatalogSource
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          type: object
+          description: CatalogSource specification.
+          required:
+          - sourceType
+          - displayName
+          properties:
+            sourceType:
+              type: string
+              enum:
+              - grpc
+              - internal
+              - configmap
+              description: Type of registry. grpc for container-image or address-based registries; internal/configmap for ConfigMap-backed registries.
+            image:
+              type: string
+              description: Container image running the gRPC catalog API. Used when sourceType is grpc with an image reference.
+            address:
+              type: string
+              description: gRPC address of an existing registry. Used when sourceType is grpc and the pod is externally managed.
+            displayName:
+              type: string
+              description: Human-readable name for the catalog displayed in the UI.
+            publisher:
+              type: string
+              description: Name of the organization publishing this catalog.
+            description:
+              type: string
+              description: Description of the catalog and its contents.
+            updateStrategy:
+              type: object
+              description: How often the catalog image is polled for updates.
+              properties:
+                registryPoll:
+                  type: object
+                  properties:
+                    interval:
+                      type: string
+                      description: 'Duration string for polling interval. Example: 10m, 1h.'
+        status:
+          type: object
+          description: Current connectivity and registry status.
+          properties:
+            connectionState:
+              type: object
+              properties:
+                address:
+                  type: string
+                  description: Address the catalog pod is serving on.
+                lastConnect:
+                  type: string
+                  format: date-time
+                  description: Time of last successful connection.
+                lastObservedState:
+                  type: string
+                  description: Last observed connection state.
+            registryService:
+              type: object
+              properties:
+                serviceName:
+                  type: string
+                serviceNamespace:
+                  type: string
+                port:
+                  type: string
+    ListMeta:
+      type: object
+      properties:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
+          type: integer
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Kubernetes service account or user bearer token.
+    clientCertificate:
+      type: mutualTLS
+      description: Client TLS certificate signed by the cluster CA.
+externalDocs:
+  description: Operator Lifecycle Manager Documentation
+  url: https://olm.operatorframework.io/docs/

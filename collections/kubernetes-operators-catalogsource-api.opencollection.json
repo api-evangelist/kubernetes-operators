@@ -1,0 +1,163 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Operator Lifecycle Manager Catalog Source API",
+    "version": "0.28.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "CatalogSource",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List CatalogSources in a namespace",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://kubernetes.default.svc/apis/operators.coreos.com/v1alpha1/namespaces/:namespace/catalogsources",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Namespace name to scope the request."
+              },
+              {
+                "name": "labelSelector",
+                "value": "",
+                "type": "query",
+                "description": "Label selector to filter resources."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return."
+              },
+              {
+                "name": "watch",
+                "value": "",
+                "type": "query",
+                "description": "If true, stream watch events."
+              }
+            ]
+          },
+          "docs": "Returns a list of all CatalogSource resources in the specified namespace. CatalogSources point to operator registries from which OLM can discover available operators, versions, and channels."
+        },
+        {
+          "info": {
+            "name": "Create a CatalogSource",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://kubernetes.default.svc/apis/operators.coreos.com/v1alpha1/namespaces/:namespace/catalogsources",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Namespace name to scope the request."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new CatalogSource in the specified namespace. OLM will connect to the registry and begin indexing available operators, making them discoverable for Subscription creation."
+        },
+        {
+          "info": {
+            "name": "Get a CatalogSource",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://kubernetes.default.svc/apis/operators.coreos.com/v1alpha1/namespaces/:namespace/catalogsources/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Namespace name to scope the request."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the OLM resource."
+              }
+            ]
+          },
+          "docs": "Returns the specified CatalogSource including its type, registry connection details, update interval, and connectivity status."
+        },
+        {
+          "info": {
+            "name": "Replace a CatalogSource",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://kubernetes.default.svc/apis/operators.coreos.com/v1alpha1/namespaces/:namespace/catalogsources/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Namespace name to scope the request."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the OLM resource."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the full specification of the specified CatalogSource. Used to update the registry image or address when a new catalog image is published."
+        },
+        {
+          "info": {
+            "name": "Delete a CatalogSource",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://kubernetes.default.svc/apis/operators.coreos.com/v1alpha1/namespaces/:namespace/catalogsources/:name",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "path",
+                "description": "Namespace name to scope the request."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the OLM resource."
+              }
+            ]
+          },
+          "docs": "Deletes the specified CatalogSource. Subscriptions referencing this catalog will no longer receive updates, but existing installed operators are not affected."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

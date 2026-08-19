@@ -1,0 +1,305 @@
+openapi: 3.2.0
+info:
+  title: Operator Lifecycle Manager Operator Group API
+  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster. OLM provides resources including CatalogSource for operator registries, OperatorGroup for namespace scoping, Subscription for tracking desired operator versions and channels, InstallPlan for reviewing pending installations, and ClusterServiceVersion as the primary operator manifest defining runtime components and RBAC rules.
+  version: 0.28.0
+  contact:
+    name: Operator Framework Community
+    url: https://github.com/operator-framework/operator-lifecycle-manager
+  termsOfService: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://kubernetes.default.svc
+  description: In-cluster Kubernetes API Server (OLM resources served as CRDs)
+security:
+- bearerAuth: []
+- clientCertificate: []
+tags:
+- name: OperatorGroup
+  description: OperatorGroup resources defining which namespaces operators installed in the group are allowed to watch and manage resources in.
+paths:
+  /apis/operators.coreos.com/v1/namespaces/{namespace}/operatorgroups:
+    get:
+      operationId: listNamespacedOperatorGroups
+      summary: List OperatorGroups in a namespace
+      description: Returns a list of all OperatorGroup resources in the specified namespace. An OperatorGroup scopes which namespaces operators installed in that namespace can watch and manage. Only one OperatorGroup should exist per namespace.
+      tags:
+      - OperatorGroup
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/LabelSelector'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/Watch'
+      responses:
+        '200':
+          description: List of OperatorGroups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorGroupList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createNamespacedOperatorGroup
+      summary: Create an OperatorGroup
+      description: Creates a new OperatorGroup in the specified namespace. Operators installed in this namespace will be scoped to watch the namespaces defined in targetNamespaces.
+      tags:
+      - OperatorGroup
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperatorGroup'
+      responses:
+        '201':
+          description: OperatorGroup created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorGroup'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /apis/operators.coreos.com/v1/namespaces/{namespace}/operatorgroups/{name}:
+    get:
+      operationId: getNamespacedOperatorGroup
+      summary: Get an OperatorGroup
+      description: Returns the specified OperatorGroup including its target namespace configuration and the list of namespaces currently in scope.
+      tags:
+      - OperatorGroup
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: OperatorGroup details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorGroup'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteNamespacedOperatorGroup
+      summary: Delete an OperatorGroup
+      description: Deletes the specified OperatorGroup. This will disrupt operators in the namespace that rely on the OperatorGroup for their namespace scope.
+      tags:
+      - OperatorGroup
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: OperatorGroup deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorGroup'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
+      schema:
+        type: string
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
+    NameParam:
+      name: name
+      in: path
+      required: true
+      description: Name of the OLM resource.
+      schema:
+        type: string
+    Watch:
+      name: watch
+      in: query
+      description: If true, stream watch events.
+      schema:
+        type: boolean
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+  schemas:
+    OperatorGroupList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: OperatorGroupList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperatorGroup'
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+    OperatorGroup:
+      type: object
+      description: An OperatorGroup scopes all operators installed in its namespace to watch the namespaces listed in targetNamespaces. An empty targetNamespaces means the operator watches all namespaces.
+      properties:
+        apiVersion:
+          type: string
+          const: operators.coreos.com/v1
+        kind:
+          type: string
+          const: OperatorGroup
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          type: object
+          description: OperatorGroup specification.
+          properties:
+            targetNamespaces:
+              type: array
+              description: Namespaces the operators in this group will watch. Empty means all namespaces (cluster-wide).
+              items:
+                type: string
+            selector:
+              type: object
+              description: Label selector for namespaces this operator group targets. An alternative to listing targetNamespaces explicitly.
+              properties:
+                matchLabels:
+                  type: object
+                  additionalProperties:
+                    type: string
+        status:
+          type: object
+          properties:
+            namespaces:
+              type: array
+              description: Resolved list of target namespaces.
+              items:
+                type: string
+            conditions:
+              type: array
+              items:
+                $ref: '#/components/schemas/Condition'
+    Condition:
+      type: object
+      description: A condition expressing an aspect of current resource state.
+      required:
+      - type
+      - status
+      properties:
+        type:
+          type: string
+          description: Type of condition.
+        status:
+          type: string
+          enum:
+          - 'True'
+          - 'False'
+          - Unknown
+        reason:
+          type: string
+          description: Machine-readable reason.
+        message:
+          type: string
+          description: Human-readable details.
+        lastTransitionTime:
+          type: string
+          format: date-time
+    Status:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+          enum:
+          - Success
+          - Failure
+    ListMeta:
+      type: object
+      properties:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
+          type: integer
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Kubernetes service account or user bearer token.
+    clientCertificate:
+      type: mutualTLS
+      description: Client TLS certificate signed by the cluster CA.
+externalDocs:
+  description: Operator Lifecycle Manager Documentation
+  url: https://olm.operatorframework.io/docs/

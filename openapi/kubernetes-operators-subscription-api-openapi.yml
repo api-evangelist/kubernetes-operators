@@ -1,0 +1,361 @@
+openapi: 3.2.0
+info:
+  title: Operator Lifecycle Manager Subscription API
+  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster. OLM provides resources including CatalogSource for operator registries, OperatorGroup for namespace scoping, Subscription for tracking desired operator versions and channels, InstallPlan for reviewing pending installations, and ClusterServiceVersion as the primary operator manifest defining runtime components and RBAC rules.
+  version: 0.28.0
+  contact:
+    name: Operator Framework Community
+    url: https://github.com/operator-framework/operator-lifecycle-manager
+  termsOfService: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://kubernetes.default.svc
+  description: In-cluster Kubernetes API Server (OLM resources served as CRDs)
+security:
+- bearerAuth: []
+- clientCertificate: []
+tags:
+- name: Subscription
+  description: Subscription resources expressing intent to install an operator from a channel, with automatic or manual update approval.
+paths:
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/subscriptions:
+    get:
+      operationId: listNamespacedSubscriptions
+      summary: List Subscriptions in a namespace
+      description: Returns a list of all Subscription resources in the specified namespace. Subscriptions express intent to install an operator from a specific catalog and channel, with automatic or manual update approval.
+      tags:
+      - Subscription
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/LabelSelector'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/Watch'
+      responses:
+        '200':
+          description: List of Subscriptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createNamespacedSubscription
+      summary: Create a Subscription
+      description: Creates a new Subscription, triggering OLM to create an InstallPlan and, if approval is Automatic, install the operator from the specified catalog source and channel.
+      tags:
+      - Subscription
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+      responses:
+        '201':
+          description: Subscription created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /apis/operators.coreos.com/v1alpha1/namespaces/{namespace}/subscriptions/{name}:
+    get:
+      operationId: getNamespacedSubscription
+      summary: Get a Subscription
+      description: Returns the specified Subscription including the operator package name, catalog source, channel, installed CSV name, and current state.
+      tags:
+      - Subscription
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: Subscription details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: patchNamespacedSubscription
+      summary: Patch a Subscription
+      description: Applies a partial update to the specified Subscription. Used to change the channel, update approval mode, or pin to a specific starting CSV version.
+      tags:
+      - Subscription
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Subscription patched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteNamespacedSubscription
+      summary: Delete a Subscription
+      description: Deletes the specified Subscription. The operator's ClusterServiceVersion and its managed resources remain installed; delete those separately to fully remove the operator.
+      tags:
+      - Subscription
+      parameters:
+      - $ref: '#/components/parameters/NamespaceParam'
+      - $ref: '#/components/parameters/NameParam'
+      responses:
+        '200':
+          description: Subscription deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
+      schema:
+        type: string
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
+    NameParam:
+      name: name
+      in: path
+      required: true
+      description: Name of the OLM resource.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+    Watch:
+      name: watch
+      in: query
+      description: If true, stream watch events.
+      schema:
+        type: boolean
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+  schemas:
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+    Condition:
+      type: object
+      description: A condition expressing an aspect of current resource state.
+      required:
+      - type
+      - status
+      properties:
+        type:
+          type: string
+          description: Type of condition.
+        status:
+          type: string
+          enum:
+          - 'True'
+          - 'False'
+          - Unknown
+        reason:
+          type: string
+          description: Machine-readable reason.
+        message:
+          type: string
+          description: Human-readable details.
+        lastTransitionTime:
+          type: string
+          format: date-time
+    Status:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+          enum:
+          - Success
+          - Failure
+    ListMeta:
+      type: object
+      properties:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
+          type: integer
+    SubscriptionList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: SubscriptionList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+    Subscription:
+      type: object
+      description: A Subscription expresses intent to install and keep current an operator from a specific channel and catalog. OLM creates InstallPlans from Subscriptions and manages upgrades when new versions are available.
+      properties:
+        apiVersion:
+          type: string
+          const: operators.coreos.com/v1alpha1
+        kind:
+          type: string
+          const: Subscription
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          type: object
+          description: Subscription specification.
+          required:
+          - name
+          - source
+          - sourceNamespace
+          properties:
+            name:
+              type: string
+              description: Package name in the catalog to subscribe to. This matches the packageName in the CatalogSource's registry.
+            source:
+              type: string
+              description: Name of the CatalogSource to use for this subscription.
+            sourceNamespace:
+              type: string
+              description: Namespace where the CatalogSource is located.
+            channel:
+              type: string
+              description: 'Channel in the operator package to subscribe to. Example: stable, alpha, fast. Defaults to the package''s default channel.'
+            startingCSV:
+              type: string
+              description: Specific ClusterServiceVersion to start the subscription at. Useful to pin to a specific version.
+            installPlanApproval:
+              type: string
+              enum:
+              - Automatic
+              - Manual
+              description: Approval mode for InstallPlans. Automatic installs immediately; Manual requires an admin to approve each InstallPlan.
+              default: Automatic
+        status:
+          type: object
+          properties:
+            installedCSV:
+              type: string
+              description: Currently installed CSV name.
+            currentCSV:
+              type: string
+              description: Latest CSV available in the subscribed channel.
+            state:
+              type: string
+              enum:
+              - AtLatestKnown
+              - UpgradePending
+              - UpgradeAvailable
+              - None
+              description: Current state of the subscription.
+            installPlanRef:
+              type: object
+              description: Reference to the pending or last InstallPlan.
+              properties:
+                name:
+                  type: string
+                namespace:
+                  type: string
+            conditions:
+              type: array
+              items:
+                $ref: '#/components/schemas/Condition'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Kubernetes service account or user bearer token.
+    clientCertificate:
+      type: mutualTLS
+      description: Client TLS certificate signed by the cluster CA.
+externalDocs:
+  description: Operator Lifecycle Manager Documentation
+  url: https://olm.operatorframework.io/docs/
