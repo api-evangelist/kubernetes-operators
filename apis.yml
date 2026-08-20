@@ -21,6 +21,12 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/kubernetes-operators.png
 tags:
   - Automation
+  - Cloud-Native
+  - DevOps
+  - Infrastructure
+  - Kubernetes
+tags_raw:
+  - Automation
   - Cloud Native
   - DevOps
   - Infrastructure
@@ -38,6 +44,11 @@ apis:
     that automates the deployment, scaling, and management of Kubernetes applications.
   humanURL: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
   tags:
+  - Automation
+  - Cloud-Native
+  - Custom Resources
+  - Kubernetes
+  tags_raw:
   - Automation
   - Cloud Native
   - Custom Resources
@@ -187,6 +198,8 @@ apis:
     and versioning for operator-managed objects.
   humanURL: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
   tags:
+  - Custom Resource Definitions
+  tags_raw:
   - CustomResourceDefinitions
   properties:
   - type: OpenAPI
