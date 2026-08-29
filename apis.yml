@@ -6,6 +6,19 @@ description: >-
   Kubernetes applications that extend the Kubernetes API to create, configure,
   and manage instances of complex applications on behalf of a Kubernetes user.
 type: Index
+deliveryModel:
+  model: self-hosted
+  license: Apache-2.0
+  open_source: true
+  commercial: false
+  callable_host: false
+  label: Self-hosted open source · you run it yourself
+  confidence: high
+  source:
+  - license
+  - openapi
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: free
   onboarding: unknown
