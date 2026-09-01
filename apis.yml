@@ -211,7 +211,7 @@ apis:
     and versioning for operator-managed objects.
   humanURL: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
   tags:
-  - CustomResourceDefinitions
+  - Custom Resource Definitions
   tags_raw:
   - CustomResourceDefinitions
   properties:
