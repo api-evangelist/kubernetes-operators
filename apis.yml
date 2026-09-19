@@ -83,6 +83,11 @@ apis:
   tags:
   - Go
   - Kubernetes
+  - Operator
+  - SDK
+  tags_raw:
+  - Go
+  - Kubernetes
   - Operators
   - SDK
   properties:
@@ -102,6 +107,11 @@ apis:
   tags:
   - Community
   - Kubernetes
+  - Operator
+  - Registry
+  tags_raw:
+  - Community
+  - Kubernetes
   - Operators
   - Registry
   properties:
@@ -115,6 +125,11 @@ apis:
     Cache, and Reconciler interfaces for building controllers that interact with the Kubernetes API.
   humanURL: https://github.com/kubernetes-sigs/controller-runtime
   tags:
+  - Controller
+  - Go
+  - Kubernetes
+  - SDK
+  tags_raw:
   - Controllers
   - Go
   - Kubernetes
