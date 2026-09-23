@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Operator Lifecycle Manager Cluster Service Version API
-  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster. OLM provides resources including CatalogSource for operator registries, OperatorGroup for namespace scoping, Subscription for tracking desired operator versions and channels, InstallPlan for reviewing pending installations, and ClusterServiceVersion as the primary operator manifest defining runtime components and RBAC rules.
+  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster.
   version: 0.28.0
   contact:
     name: Operator Framework Community
@@ -81,6 +81,45 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    CRDDescription:
+      type: object
+      description: Description of a CRD owned or required by an operator, used in the ClusterServiceVersion to declare the operator's CRD dependencies.
+      required:
+      - name
+      - version
+      - kind
+      properties:
+        name:
+          type: string
+          description: CRD name in {plural}.{group} format.
+        version:
+          type: string
+          description: Version of the CRD API.
+        kind:
+          type: string
+          description: Kind of the custom resource.
+        description:
+          type: string
+          description: Human-readable description of what this CRD represents.
+        displayName:
+          type: string
+          description: Human-readable display name for the CRD.
+    ClusterServiceVersionList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: ClusterServiceVersionList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterServiceVersion'
     ClusterServiceVersion:
       type: object
       description: A ClusterServiceVersion is the primary OLM manifest for an installed operator version. It contains the operator's deployment spec, RBAC rules, owned and required CRDs, install modes, and lifecycle hooks.
@@ -210,29 +249,54 @@ components:
             lastTransitionTime:
               type: string
               format: date-time
-    CRDDescription:
+    Status:
       type: object
-      description: Description of a CRD owned or required by an operator, used in the ClusterServiceVersion to declare the operator's CRD dependencies.
-      required:
-      - name
-      - version
-      - kind
       properties:
-        name:
+        code:
+          type: integer
+        message:
           type: string
-          description: CRD name in {plural}.{group} format.
-        version:
+        reason:
           type: string
-          description: Version of the CRD API.
-        kind:
+        status:
           type: string
-          description: Kind of the custom resource.
-        description:
+          enum:
+          - Success
+          - Failure
+    Condition:
+      type: object
+      description: A condition expressing an aspect of current resource state.
+      required:
+      - type
+      - status
+      properties:
+        type:
           type: string
-          description: Human-readable description of what this CRD represents.
-        displayName:
+          description: Type of condition.
+        status:
           type: string
-          description: Human-readable display name for the CRD.
+          enum:
+          - 'True'
+          - 'False'
+          - Unknown
+        reason:
+          type: string
+          description: Machine-readable reason.
+        message:
+          type: string
+          description: Human-readable details.
+        lastTransitionTime:
+          type: string
+          format: date-time
+    ListMeta:
+      type: object
+      properties:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
+          type: integer
     ObjectMeta:
       type: object
       description: Standard Kubernetes object metadata.
@@ -260,78 +324,7 @@ components:
           type: object
           additionalProperties:
             type: string
-    Condition:
-      type: object
-      description: A condition expressing an aspect of current resource state.
-      required:
-      - type
-      - status
-      properties:
-        type:
-          type: string
-          description: Type of condition.
-        status:
-          type: string
-          enum:
-          - 'True'
-          - 'False'
-          - Unknown
-        reason:
-          type: string
-          description: Machine-readable reason.
-        message:
-          type: string
-          description: Human-readable details.
-        lastTransitionTime:
-          type: string
-          format: date-time
-    ClusterServiceVersionList:
-      type: object
-      required:
-      - items
-      properties:
-        apiVersion:
-          type: string
-        kind:
-          type: string
-          const: ClusterServiceVersionList
-        metadata:
-          $ref: '#/components/schemas/ListMeta'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterServiceVersion'
-    Status:
-      type: object
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        reason:
-          type: string
-        status:
-          type: string
-          enum:
-          - Success
-          - Failure
-    ListMeta:
-      type: object
-      properties:
-        resourceVersion:
-          type: string
-        continue:
-          type: string
-        remainingItemCount:
-          type: integer
   parameters:
-    NamespaceParam:
-      name: namespace
-      in: path
-      required: true
-      description: Namespace name to scope the request.
-      schema:
-        type: string
     LabelSelector:
       name: labelSelector
       in: query
@@ -343,6 +336,13 @@ components:
       in: path
       required: true
       description: Name of the OLM resource.
+      schema:
+        type: string
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
       schema:
         type: string
     Watch:
@@ -359,14 +359,14 @@ components:
         type: integer
         minimum: 1
   responses:
-    Unauthorized:
-      description: Unauthorized
+    NotFound:
+      description: Not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
-    NotFound:
-      description: Not found
+    Unauthorized:
+      description: Unauthorized
       content:
         application/json:
           schema:

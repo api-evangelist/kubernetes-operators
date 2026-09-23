@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Operator Lifecycle Manager Catalog Source API
-  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster. OLM provides resources including CatalogSource for operator registries, OperatorGroup for namespace scoping, Subscription for tracking desired operator versions and channels, InstallPlan for reviewing pending installations, and ClusterServiceVersion as the primary operator manifest defining runtime components and RBAC rules.
+  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster.
   version: 0.28.0
   contact:
     name: Operator Framework Community
@@ -132,13 +132,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   parameters:
-    NamespaceParam:
-      name: namespace
-      in: path
-      required: true
-      description: Namespace name to scope the request.
-      schema:
-        type: string
     LabelSelector:
       name: labelSelector
       in: query
@@ -150,6 +143,13 @@ components:
       in: path
       required: true
       description: Name of the OLM resource.
+      schema:
+        type: string
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
       schema:
         type: string
     Watch:
@@ -165,50 +165,26 @@ components:
       schema:
         type: integer
         minimum: 1
+  responses:
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
   schemas:
-    CatalogSourceList:
-      type: object
-      required:
-      - items
-      properties:
-        apiVersion:
-          type: string
-        kind:
-          type: string
-          const: CatalogSourceList
-        metadata:
-          $ref: '#/components/schemas/ListMeta'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogSource'
-    ObjectMeta:
-      type: object
-      description: Standard Kubernetes object metadata.
-      properties:
-        name:
-          type: string
-          description: Name of the object.
-        namespace:
-          type: string
-          description: Namespace of the object.
-        uid:
-          type: string
-          description: Unique server-assigned identifier.
-        resourceVersion:
-          type: string
-          description: Internal version string.
-        creationTimestamp:
-          type: string
-          format: date-time
-        labels:
-          type: object
-          additionalProperties:
-            type: string
-        annotations:
-          type: object
-          additionalProperties:
-            type: string
     Status:
       type: object
       properties:
@@ -300,6 +276,22 @@ components:
                   type: string
                 port:
                   type: string
+    CatalogSourceList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: CatalogSourceList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogSource'
     ListMeta:
       type: object
       properties:
@@ -309,25 +301,33 @@ components:
           type: string
         remainingItemCount:
           type: integer
-  responses:
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    NotFound:
-      description: Not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
   securitySchemes:
     bearerAuth:
       type: http

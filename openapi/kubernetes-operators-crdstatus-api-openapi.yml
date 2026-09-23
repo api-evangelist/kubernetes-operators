@@ -64,6 +64,235 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    CustomResourceColumnDefinition:
+      type: object
+      description: A column definition for kubectl get output, displaying a field from the custom resource using a JSON path expression.
+      required:
+      - name
+      - type
+      - jsonPath
+      properties:
+        name:
+          type: string
+          description: Column header name displayed in kubectl output.
+        type:
+          type: string
+          enum:
+          - integer
+          - number
+          - string
+          - boolean
+          - date
+          description: Data type of the column value.
+        jsonPath:
+          type: string
+          description: 'JSON path expression relative to the object root. Example: .spec.replicas, .status.phase.'
+        format:
+          type: string
+          description: Optional display format. Use 'date-time' for RFC 3339 timestamps.
+        description:
+          type: string
+          description: Human-readable description of the column.
+        priority:
+          type: integer
+          description: Display priority. 0 (default) is always shown; values > 0 shown only with kubectl get -o wide.
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: 'CRD name in the format {plural}.{group}. Example: databases.example.com.'
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version for optimistic concurrency.
+        generation:
+          type: integer
+          description: Spec generation sequence number.
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp.
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+          description: Label key-value pairs.
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+          description: Non-identifying metadata.
+    CustomResourceValidation:
+      type: object
+      description: OpenAPI v3 schema used to validate custom resource instances on creation and update. Applied per-version or at the CRD level.
+      properties:
+        openAPIV3Schema:
+          type: object
+          description: OpenAPI v3 schema as a JSON Schema object. Specifies types, required fields, enums, minimum/maximum, patterns, and nested object structures for the custom resource spec and status.
+    CRDCondition:
+      type: object
+      description: A condition on a CustomResourceDefinition indicating the status of a specific aspect such as name acceptance or API establishment.
+      required:
+      - type
+      - status
+      properties:
+        type:
+          type: string
+          enum:
+          - Established
+          - NamesAccepted
+          - NonStructuralSchema
+          - Terminating
+          - KubernetesAPIApprovalPolicyConformant
+          description: Type of CRD condition.
+        status:
+          type: string
+          enum:
+          - 'True'
+          - 'False'
+          - Unknown
+          description: Status of the condition.
+        reason:
+          type: string
+          description: Machine-readable reason for the condition state.
+        message:
+          type: string
+          description: Human-readable message about the condition.
+        lastTransitionTime:
+          type: string
+          format: date-time
+          description: Time the condition last changed.
+    Status:
+      type: object
+      description: Error or result status.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+          enum:
+          - Success
+          - Failure
+    CustomResourceDefinitionStatus:
+      type: object
+      description: Status of a CustomResourceDefinition reporting whether the API has been established, names have been accepted, and which versions are stored.
+      properties:
+        conditions:
+          type: array
+          description: 'Current conditions of the CRD. Key conditions: Established (API is ready), NamesAccepted (no naming conflicts), Terminating.'
+          items:
+            $ref: '#/components/schemas/CRDCondition'
+        acceptedNames:
+          $ref: '#/components/schemas/CustomResourceDefinitionNames'
+        storedVersions:
+          type: array
+          description: Versions of instances currently stored in etcd. Includes all versions that have been the storage version.
+          items:
+            type: string
+    CustomResourceDefinition:
+      type: object
+      description: A CustomResourceDefinition registers a new API resource type with the Kubernetes API server. Once established, users can create, list, and watch instances of the custom resource just like built-in resources.
+      properties:
+        apiVersion:
+          type: string
+          const: apiextensions.k8s.io/v1
+        kind:
+          type: string
+          const: CustomResourceDefinition
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          $ref: '#/components/schemas/CustomResourceDefinitionSpec'
+        status:
+          $ref: '#/components/schemas/CustomResourceDefinitionStatus'
+    CustomResourceDefinitionNames:
+      type: object
+      description: Naming configuration for the custom resource type including the kind, plural REST path segment, and optional short names for kubectl.
+      required:
+      - kind
+      - plural
+      properties:
+        kind:
+          type: string
+          description: 'Serialized kind of the resource. Used in API calls and YAML manifests. Example: Database, MyApp.'
+          pattern: ^[A-Z][A-Za-z0-9]*$
+        plural:
+          type: string
+          description: 'Plural name used in the REST URL path. Must be all lowercase. Example: databases, myapps.'
+          pattern: ^[a-z][a-z0-9]*$
+        singular:
+          type: string
+          description: 'Singular name used in kubectl. Defaults to lowercase kind. Example: database, myapp.'
+        shortNames:
+          type: array
+          description: 'Short names for the resource used by kubectl. Example: [db].'
+          items:
+            type: string
+        listKind:
+          type: string
+          description: List kind name. Defaults to {kind}List.
+        categories:
+          type: array
+          description: 'Groups this resource belongs to for kubectl get all and similar. Example: [all].'
+          items:
+            type: string
+    CustomResourceDefinitionVersion:
+      type: object
+      description: A single version of the custom resource API. Multiple versions may be served simultaneously; exactly one version must be the storage version.
+      required:
+      - name
+      - served
+      - storage
+      properties:
+        name:
+          type: string
+          description: 'Version name used in the REST path. Examples: v1, v1alpha1, v1beta1.'
+          pattern: ^v[0-9]+(alpha[0-9]+|beta[0-9]+)?$
+        served:
+          type: boolean
+          description: Whether this version is served via the REST API.
+        storage:
+          type: boolean
+          description: Whether instances are stored in etcd using this version. Exactly one version must have storage=true.
+        deprecated:
+          type: boolean
+          description: Whether this version is deprecated. Clients receive a warning header when accessing deprecated versions.
+          default: false
+        deprecationWarning:
+          type: string
+          description: Custom warning message for deprecated versions. Defaults to a standard deprecation warning if not set.
+        schema:
+          $ref: '#/components/schemas/CustomResourceValidation'
+        additionalPrinterColumns:
+          type: array
+          description: Columns shown in kubectl get output for this version.
+          items:
+            $ref: '#/components/schemas/CustomResourceColumnDefinition'
+        subresources:
+          type: object
+          description: Status and scale subresources configuration for this version.
+          properties:
+            status:
+              type: object
+              description: Enable the /status subresource. The operator can then update status separately from spec, respecting RBAC rules.
+            scale:
+              type: object
+              description: Enable the /scale subresource for HPA integration.
+              properties:
+                specReplicasPath:
+                  type: string
+                  description: JSON path to the spec replicas field.
+                statusReplicasPath:
+                  type: string
+                  description: JSON path to the status replicas field.
     CustomResourceDefinitionSpec:
       type: object
       description: Specification for the custom resource type including the API group, kind names, resource scope, supported versions, and validation schemas.
@@ -121,235 +350,19 @@ components:
                     service:
                       type: object
                       description: In-cluster service reference for the webhook.
-    CustomResourceDefinitionVersion:
-      type: object
-      description: A single version of the custom resource API. Multiple versions may be served simultaneously; exactly one version must be the storage version.
-      required:
-      - name
-      - served
-      - storage
-      properties:
-        name:
-          type: string
-          description: 'Version name used in the REST path. Examples: v1, v1alpha1, v1beta1.'
-          pattern: ^v[0-9]+(alpha[0-9]+|beta[0-9]+)?$
-        served:
-          type: boolean
-          description: Whether this version is served via the REST API.
-        storage:
-          type: boolean
-          description: Whether instances are stored in etcd using this version. Exactly one version must have storage=true.
-        deprecated:
-          type: boolean
-          description: Whether this version is deprecated. Clients receive a warning header when accessing deprecated versions.
-          default: false
-        deprecationWarning:
-          type: string
-          description: Custom warning message for deprecated versions. Defaults to a standard deprecation warning if not set.
-        schema:
-          $ref: '#/components/schemas/CustomResourceValidation'
-        additionalPrinterColumns:
-          type: array
-          description: Columns shown in kubectl get output for this version.
-          items:
-            $ref: '#/components/schemas/CustomResourceColumnDefinition'
-        subresources:
-          type: object
-          description: Status and scale subresources configuration for this version.
-          properties:
-            status:
-              type: object
-              description: Enable the /status subresource. The operator can then update status separately from spec, respecting RBAC rules.
-            scale:
-              type: object
-              description: Enable the /scale subresource for HPA integration.
-              properties:
-                specReplicasPath:
-                  type: string
-                  description: JSON path to the spec replicas field.
-                statusReplicasPath:
-                  type: string
-                  description: JSON path to the status replicas field.
-    ObjectMeta:
-      type: object
-      description: Standard Kubernetes object metadata.
-      properties:
-        name:
-          type: string
-          description: 'CRD name in the format {plural}.{group}. Example: databases.example.com.'
-        uid:
-          type: string
-          description: Unique server-assigned identifier.
-        resourceVersion:
-          type: string
-          description: Internal version for optimistic concurrency.
-        generation:
-          type: integer
-          description: Spec generation sequence number.
-        creationTimestamp:
-          type: string
-          format: date-time
-          description: Creation timestamp.
-        labels:
-          type: object
-          additionalProperties:
-            type: string
-          description: Label key-value pairs.
-        annotations:
-          type: object
-          additionalProperties:
-            type: string
-          description: Non-identifying metadata.
-    CRDCondition:
-      type: object
-      description: A condition on a CustomResourceDefinition indicating the status of a specific aspect such as name acceptance or API establishment.
-      required:
-      - type
-      - status
-      properties:
-        type:
-          type: string
-          enum:
-          - Established
-          - NamesAccepted
-          - NonStructuralSchema
-          - Terminating
-          - KubernetesAPIApprovalPolicyConformant
-          description: Type of CRD condition.
-        status:
-          type: string
-          enum:
-          - 'True'
-          - 'False'
-          - Unknown
-          description: Status of the condition.
-        reason:
-          type: string
-          description: Machine-readable reason for the condition state.
-        message:
-          type: string
-          description: Human-readable message about the condition.
-        lastTransitionTime:
-          type: string
-          format: date-time
-          description: Time the condition last changed.
-    CustomResourceDefinitionStatus:
-      type: object
-      description: Status of a CustomResourceDefinition reporting whether the API has been established, names have been accepted, and which versions are stored.
-      properties:
-        conditions:
-          type: array
-          description: 'Current conditions of the CRD. Key conditions: Established (API is ready), NamesAccepted (no naming conflicts), Terminating.'
-          items:
-            $ref: '#/components/schemas/CRDCondition'
-        acceptedNames:
-          $ref: '#/components/schemas/CustomResourceDefinitionNames'
-        storedVersions:
-          type: array
-          description: Versions of instances currently stored in etcd. Includes all versions that have been the storage version.
-          items:
-            type: string
-    CustomResourceValidation:
-      type: object
-      description: OpenAPI v3 schema used to validate custom resource instances on creation and update. Applied per-version or at the CRD level.
-      properties:
-        openAPIV3Schema:
-          type: object
-          description: OpenAPI v3 schema as a JSON Schema object. Specifies types, required fields, enums, minimum/maximum, patterns, and nested object structures for the custom resource spec and status.
-    Status:
-      type: object
-      description: Error or result status.
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        reason:
-          type: string
-        status:
-          type: string
-          enum:
-          - Success
-          - Failure
-    CustomResourceDefinition:
-      type: object
-      description: A CustomResourceDefinition registers a new API resource type with the Kubernetes API server. Once established, users can create, list, and watch instances of the custom resource just like built-in resources.
-      properties:
-        apiVersion:
-          type: string
-          const: apiextensions.k8s.io/v1
-        kind:
-          type: string
-          const: CustomResourceDefinition
-        metadata:
-          $ref: '#/components/schemas/ObjectMeta'
-        spec:
-          $ref: '#/components/schemas/CustomResourceDefinitionSpec'
-        status:
-          $ref: '#/components/schemas/CustomResourceDefinitionStatus'
-    CustomResourceDefinitionNames:
-      type: object
-      description: Naming configuration for the custom resource type including the kind, plural REST path segment, and optional short names for kubectl.
-      required:
-      - kind
-      - plural
-      properties:
-        kind:
-          type: string
-          description: 'Serialized kind of the resource. Used in API calls and YAML manifests. Example: Database, MyApp.'
-          pattern: ^[A-Z][A-Za-z0-9]*$
-        plural:
-          type: string
-          description: 'Plural name used in the REST URL path. Must be all lowercase. Example: databases, myapps.'
-          pattern: ^[a-z][a-z0-9]*$
-        singular:
-          type: string
-          description: 'Singular name used in kubectl. Defaults to lowercase kind. Example: database, myapp.'
-        shortNames:
-          type: array
-          description: 'Short names for the resource used by kubectl. Example: [db].'
-          items:
-            type: string
-        listKind:
-          type: string
-          description: List kind name. Defaults to {kind}List.
-        categories:
-          type: array
-          description: 'Groups this resource belongs to for kubectl get all and similar. Example: [all].'
-          items:
-            type: string
-    CustomResourceColumnDefinition:
-      type: object
-      description: A column definition for kubectl get output, displaying a field from the custom resource using a JSON path expression.
-      required:
-      - name
-      - type
-      - jsonPath
-      properties:
-        name:
-          type: string
-          description: Column header name displayed in kubectl output.
-        type:
-          type: string
-          enum:
-          - integer
-          - number
-          - string
-          - boolean
-          - date
-          description: Data type of the column value.
-        jsonPath:
-          type: string
-          description: 'JSON path expression relative to the object root. Example: .spec.replicas, .status.phase.'
-        format:
-          type: string
-          description: Optional display format. Use 'date-time' for RFC 3339 timestamps.
-        description:
-          type: string
-          description: Human-readable description of the column.
-        priority:
-          type: integer
-          description: Display priority. 0 (default) is always shown; values > 0 shown only with kubectl get -o wide.
+  responses:
+    NotFound:
+      description: CRD not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
   parameters:
     NameParam:
       name: name
@@ -358,19 +371,6 @@ components:
       description: Name of the CRD in the format {plural}.{group} (e.g. databases.example.com).
       schema:
         type: string
-  responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    NotFound:
-      description: CRD not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
   securitySchemes:
     bearerAuth:
       type: http

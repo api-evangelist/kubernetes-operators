@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Operator Lifecycle Manager Operator Group API
-  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster. OLM provides resources including CatalogSource for operator registries, OperatorGroup for namespace scoping, Subscription for tracking desired operator versions and channels, InstallPlan for reviewing pending installations, and ClusterServiceVersion as the primary operator manifest defining runtime components and RBAC rules.
+  description: The Operator Lifecycle Manager (OLM) extends Kubernetes with a declarative API for installing, upgrading, and managing the lifecycle of Operators and their dependencies in a cluster.
   version: 0.28.0
   contact:
     name: Operator Framework Community
@@ -106,13 +106,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   parameters:
-    NamespaceParam:
-      name: namespace
-      in: path
-      required: true
-      description: Namespace name to scope the request.
-      schema:
-        type: string
     LabelSelector:
       name: labelSelector
       in: query
@@ -124,6 +117,13 @@ components:
       in: path
       required: true
       description: Name of the OLM resource.
+      schema:
+        type: string
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
       schema:
         type: string
     Watch:
@@ -140,49 +140,6 @@ components:
         type: integer
         minimum: 1
   schemas:
-    OperatorGroupList:
-      type: object
-      required:
-      - items
-      properties:
-        apiVersion:
-          type: string
-        kind:
-          type: string
-          const: OperatorGroupList
-        metadata:
-          $ref: '#/components/schemas/ListMeta'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OperatorGroup'
-    ObjectMeta:
-      type: object
-      description: Standard Kubernetes object metadata.
-      properties:
-        name:
-          type: string
-          description: Name of the object.
-        namespace:
-          type: string
-          description: Namespace of the object.
-        uid:
-          type: string
-          description: Unique server-assigned identifier.
-        resourceVersion:
-          type: string
-          description: Internal version string.
-        creationTimestamp:
-          type: string
-          format: date-time
-        labels:
-          type: object
-          additionalProperties:
-            type: string
-        annotations:
-          type: object
-          additionalProperties:
-            type: string
     OperatorGroup:
       type: object
       description: An OperatorGroup scopes all operators installed in its namespace to watch the namespaces listed in targetNamespaces. An empty targetNamespaces means the operator watches all namespaces.
@@ -224,6 +181,36 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Condition'
+    Status:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+          enum:
+          - Success
+          - Failure
+    OperatorGroupList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: OperatorGroupList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperatorGroup'
     Condition:
       type: object
       description: A condition expressing an aspect of current resource state.
@@ -249,20 +236,6 @@ components:
         lastTransitionTime:
           type: string
           format: date-time
-    Status:
-      type: object
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        reason:
-          type: string
-        status:
-          type: string
-          enum:
-          - Success
-          - Failure
     ListMeta:
       type: object
       properties:
@@ -272,9 +245,36 @@ components:
           type: string
         remainingItemCount:
           type: integer
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
   responses:
-    BadRequest:
-      description: Bad request
+    NotFound:
+      description: Not found
       content:
         application/json:
           schema:
@@ -285,8 +285,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
-    NotFound:
-      description: Not found
+    BadRequest:
+      description: Bad request
       content:
         application/json:
           schema:

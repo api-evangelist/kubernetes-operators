@@ -1,19 +1,14 @@
 {
   "provider": "kubernetes-operators",
   "sources": [
-    "kubernetes-operators-catalogsource-api-openapi.yml",
-    "kubernetes-operators-clusterserviceversion-api-openapi.yml",
-    "kubernetes-operators-crdstatus-api-openapi.yml",
-    "kubernetes-operators-customresourcedefinitions-api-openapi.yml",
-    "kubernetes-operators-installplan-api-openapi.yml",
-    "kubernetes-operators-operatorgroup-api-openapi.yml",
-    "kubernetes-operators-subscription-api-openapi.yml"
+    "_original/kubernetes-crd-openapi.yml",
+    "_original/kubernetes-olm-openapi.yml"
   ],
   "outputs": [
-    "kubernetes-operators-catalogsource-api-openapi.yml",
-    "kubernetes-operators-clusterserviceversion-api-openapi.yml",
     "kubernetes-operators-crdstatus-api-openapi.yml",
     "kubernetes-operators-customresourcedefinitions-api-openapi.yml",
+    "kubernetes-operators-catalogsource-api-openapi.yml",
+    "kubernetes-operators-clusterserviceversion-api-openapi.yml",
     "kubernetes-operators-installplan-api-openapi.yml",
     "kubernetes-operators-operatorgroup-api-openapi.yml",
     "kubernetes-operators-subscription-api-openapi.yml"
@@ -22,14 +17,18 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "kubernetes-operators-catalogsource-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "kubernetes-operators-clusterserviceversion-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "kubernetes-operators-crdstatus-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "kubernetes-operators-customresourcedefinitions-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "kubernetes-operators-installplan-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "kubernetes-operators-operatorgroup-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "kubernetes-operators-subscription-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "kubernetes-crd-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "kubernetes-olm-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "kubernetes-operators-catalogsource-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kubernetes-operators-clusterserviceversion-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kubernetes-operators-crdstatus-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kubernetes-operators-customresourcedefinitions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kubernetes-operators-installplan-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kubernetes-operators-operatorgroup-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "kubernetes-operators-subscription-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
