@@ -81,45 +81,20 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    CRDDescription:
+    Status:
       type: object
-      description: Description of a CRD owned or required by an operator, used in the ClusterServiceVersion to declare the operator's CRD dependencies.
-      required:
-      - name
-      - version
-      - kind
       properties:
-        name:
+        code:
+          type: integer
+        message:
           type: string
-          description: CRD name in {plural}.{group} format.
-        version:
+        reason:
           type: string
-          description: Version of the CRD API.
-        kind:
+        status:
           type: string
-          description: Kind of the custom resource.
-        description:
-          type: string
-          description: Human-readable description of what this CRD represents.
-        displayName:
-          type: string
-          description: Human-readable display name for the CRD.
-    ClusterServiceVersionList:
-      type: object
-      required:
-      - items
-      properties:
-        apiVersion:
-          type: string
-        kind:
-          type: string
-          const: ClusterServiceVersionList
-        metadata:
-          $ref: '#/components/schemas/ListMeta'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterServiceVersion'
+          enum:
+          - Success
+          - Failure
     ClusterServiceVersion:
       type: object
       description: A ClusterServiceVersion is the primary OLM manifest for an installed operator version. It contains the operator's deployment spec, RBAC rules, owned and required CRDs, install modes, and lifecycle hooks.
@@ -249,54 +224,29 @@ components:
             lastTransitionTime:
               type: string
               format: date-time
-    Status:
+    CRDDescription:
       type: object
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        reason:
-          type: string
-        status:
-          type: string
-          enum:
-          - Success
-          - Failure
-    Condition:
-      type: object
-      description: A condition expressing an aspect of current resource state.
+      description: Description of a CRD owned or required by an operator, used in the ClusterServiceVersion to declare the operator's CRD dependencies.
       required:
-      - type
-      - status
+      - name
+      - version
+      - kind
       properties:
-        type:
+        name:
           type: string
-          description: Type of condition.
-        status:
+          description: CRD name in {plural}.{group} format.
+        version:
           type: string
-          enum:
-          - 'True'
-          - 'False'
-          - Unknown
-        reason:
+          description: Version of the CRD API.
+        kind:
           type: string
-          description: Machine-readable reason.
-        message:
+          description: Kind of the custom resource.
+        description:
           type: string
-          description: Human-readable details.
-        lastTransitionTime:
+          description: Human-readable description of what this CRD represents.
+        displayName:
           type: string
-          format: date-time
-    ListMeta:
-      type: object
-      properties:
-        resourceVersion:
-          type: string
-        continue:
-          type: string
-        remainingItemCount:
-          type: integer
+          description: Human-readable display name for the CRD.
     ObjectMeta:
       type: object
       description: Standard Kubernetes object metadata.
@@ -324,13 +274,70 @@ components:
           type: object
           additionalProperties:
             type: string
+    Condition:
+      type: object
+      description: A condition expressing an aspect of current resource state.
+      required:
+      - type
+      - status
+      properties:
+        type:
+          type: string
+          description: Type of condition.
+        status:
+          type: string
+          enum:
+          - 'True'
+          - 'False'
+          - Unknown
+        reason:
+          type: string
+          description: Machine-readable reason.
+        message:
+          type: string
+          description: Human-readable details.
+        lastTransitionTime:
+          type: string
+          format: date-time
+    ClusterServiceVersionList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: ClusterServiceVersionList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterServiceVersion'
+    ListMeta:
+      type: object
+      properties:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
+          type: integer
+  responses:
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
   parameters:
-    LabelSelector:
-      name: labelSelector
-      in: query
-      description: Label selector to filter resources.
-      schema:
-        type: string
     NameParam:
       name: name
       in: path
@@ -358,19 +365,12 @@ components:
       schema:
         type: integer
         minimum: 1
-  responses:
-    NotFound:
-      description: Not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

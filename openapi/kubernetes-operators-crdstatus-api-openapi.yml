@@ -64,6 +64,143 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    Status:
+      type: object
+      description: Error or result status.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+          enum:
+          - Success
+          - Failure
+    CustomResourceDefinitionStatus:
+      type: object
+      description: Status of a CustomResourceDefinition reporting whether the API has been established, names have been accepted, and which versions are stored.
+      properties:
+        conditions:
+          type: array
+          description: 'Current conditions of the CRD. Key conditions: Established (API is ready), NamesAccepted (no naming conflicts), Terminating.'
+          items:
+            $ref: '#/components/schemas/CRDCondition'
+        acceptedNames:
+          $ref: '#/components/schemas/CustomResourceDefinitionNames'
+        storedVersions:
+          type: array
+          description: Versions of instances currently stored in etcd. Includes all versions that have been the storage version.
+          items:
+            type: string
+    CustomResourceDefinition:
+      type: object
+      description: A CustomResourceDefinition registers a new API resource type with the Kubernetes API server. Once established, users can create, list, and watch instances of the custom resource just like built-in resources.
+      properties:
+        apiVersion:
+          type: string
+          const: apiextensions.k8s.io/v1
+        kind:
+          type: string
+          const: CustomResourceDefinition
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          $ref: '#/components/schemas/CustomResourceDefinitionSpec'
+        status:
+          $ref: '#/components/schemas/CustomResourceDefinitionStatus'
+    CustomResourceDefinitionSpec:
+      type: object
+      description: Specification for the custom resource type including the API group, kind names, resource scope, supported versions, and validation schemas.
+      required:
+      - group
+      - names
+      - scope
+      - versions
+      properties:
+        group:
+          type: string
+          description: 'API group for the custom resource. Must be a valid DNS domain. Example: example.com, databases.operator.io.'
+          pattern: ^[a-z][a-z0-9\-\.]*[a-z0-9]$
+        names:
+          $ref: '#/components/schemas/CustomResourceDefinitionNames'
+        scope:
+          type: string
+          enum:
+          - Cluster
+          - Namespaced
+          description: Whether instances of the custom resource are cluster-scoped or namespaced.
+        versions:
+          type: array
+          description: API versions this CRD serves. At least one version is required; exactly one must be the storage version.
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CustomResourceDefinitionVersion'
+        conversion:
+          type: object
+          description: Conversion strategy for converting between versions. Used when multiple versions exist and instances are stored in one version but served in another.
+          properties:
+            strategy:
+              type: string
+              enum:
+              - None
+              - Webhook
+              description: None means no conversion between versions; Webhook calls an external webhook to perform conversion.
+            webhook:
+              type: object
+              description: Webhook conversion configuration.
+              properties:
+                conversionReviewVersions:
+                  type: array
+                  items:
+                    type: string
+                  description: Conversion review API versions the webhook understands.
+                clientConfig:
+                  type: object
+                  description: How to call the webhook.
+                  properties:
+                    url:
+                      type: string
+                      format: uri
+                      description: Webhook URL.
+                    service:
+                      type: object
+                      description: In-cluster service reference for the webhook.
+    CRDCondition:
+      type: object
+      description: A condition on a CustomResourceDefinition indicating the status of a specific aspect such as name acceptance or API establishment.
+      required:
+      - type
+      - status
+      properties:
+        type:
+          type: string
+          enum:
+          - Established
+          - NamesAccepted
+          - NonStructuralSchema
+          - Terminating
+          - KubernetesAPIApprovalPolicyConformant
+          description: Type of CRD condition.
+        status:
+          type: string
+          enum:
+          - 'True'
+          - 'False'
+          - Unknown
+          description: Status of the condition.
+        reason:
+          type: string
+          description: Machine-readable reason for the condition state.
+        message:
+          type: string
+          description: Human-readable message about the condition.
+        lastTransitionTime:
+          type: string
+          format: date-time
+          description: Time the condition last changed.
     CustomResourceColumnDefinition:
       type: object
       description: A column definition for kubectl get output, displaying a field from the custom resource using a JSON path expression.
@@ -126,93 +263,6 @@ components:
           additionalProperties:
             type: string
           description: Non-identifying metadata.
-    CustomResourceValidation:
-      type: object
-      description: OpenAPI v3 schema used to validate custom resource instances on creation and update. Applied per-version or at the CRD level.
-      properties:
-        openAPIV3Schema:
-          type: object
-          description: OpenAPI v3 schema as a JSON Schema object. Specifies types, required fields, enums, minimum/maximum, patterns, and nested object structures for the custom resource spec and status.
-    CRDCondition:
-      type: object
-      description: A condition on a CustomResourceDefinition indicating the status of a specific aspect such as name acceptance or API establishment.
-      required:
-      - type
-      - status
-      properties:
-        type:
-          type: string
-          enum:
-          - Established
-          - NamesAccepted
-          - NonStructuralSchema
-          - Terminating
-          - KubernetesAPIApprovalPolicyConformant
-          description: Type of CRD condition.
-        status:
-          type: string
-          enum:
-          - 'True'
-          - 'False'
-          - Unknown
-          description: Status of the condition.
-        reason:
-          type: string
-          description: Machine-readable reason for the condition state.
-        message:
-          type: string
-          description: Human-readable message about the condition.
-        lastTransitionTime:
-          type: string
-          format: date-time
-          description: Time the condition last changed.
-    Status:
-      type: object
-      description: Error or result status.
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        reason:
-          type: string
-        status:
-          type: string
-          enum:
-          - Success
-          - Failure
-    CustomResourceDefinitionStatus:
-      type: object
-      description: Status of a CustomResourceDefinition reporting whether the API has been established, names have been accepted, and which versions are stored.
-      properties:
-        conditions:
-          type: array
-          description: 'Current conditions of the CRD. Key conditions: Established (API is ready), NamesAccepted (no naming conflicts), Terminating.'
-          items:
-            $ref: '#/components/schemas/CRDCondition'
-        acceptedNames:
-          $ref: '#/components/schemas/CustomResourceDefinitionNames'
-        storedVersions:
-          type: array
-          description: Versions of instances currently stored in etcd. Includes all versions that have been the storage version.
-          items:
-            type: string
-    CustomResourceDefinition:
-      type: object
-      description: A CustomResourceDefinition registers a new API resource type with the Kubernetes API server. Once established, users can create, list, and watch instances of the custom resource just like built-in resources.
-      properties:
-        apiVersion:
-          type: string
-          const: apiextensions.k8s.io/v1
-        kind:
-          type: string
-          const: CustomResourceDefinition
-        metadata:
-          $ref: '#/components/schemas/ObjectMeta'
-        spec:
-          $ref: '#/components/schemas/CustomResourceDefinitionSpec'
-        status:
-          $ref: '#/components/schemas/CustomResourceDefinitionStatus'
     CustomResourceDefinitionNames:
       type: object
       description: Naming configuration for the custom resource type including the kind, plural REST path segment, and optional short names for kubectl.
@@ -293,63 +343,13 @@ components:
                 statusReplicasPath:
                   type: string
                   description: JSON path to the status replicas field.
-    CustomResourceDefinitionSpec:
+    CustomResourceValidation:
       type: object
-      description: Specification for the custom resource type including the API group, kind names, resource scope, supported versions, and validation schemas.
-      required:
-      - group
-      - names
-      - scope
-      - versions
+      description: OpenAPI v3 schema used to validate custom resource instances on creation and update. Applied per-version or at the CRD level.
       properties:
-        group:
-          type: string
-          description: 'API group for the custom resource. Must be a valid DNS domain. Example: example.com, databases.operator.io.'
-          pattern: ^[a-z][a-z0-9\-\.]*[a-z0-9]$
-        names:
-          $ref: '#/components/schemas/CustomResourceDefinitionNames'
-        scope:
-          type: string
-          enum:
-          - Cluster
-          - Namespaced
-          description: Whether instances of the custom resource are cluster-scoped or namespaced.
-        versions:
-          type: array
-          description: API versions this CRD serves. At least one version is required; exactly one must be the storage version.
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/CustomResourceDefinitionVersion'
-        conversion:
+        openAPIV3Schema:
           type: object
-          description: Conversion strategy for converting between versions. Used when multiple versions exist and instances are stored in one version but served in another.
-          properties:
-            strategy:
-              type: string
-              enum:
-              - None
-              - Webhook
-              description: None means no conversion between versions; Webhook calls an external webhook to perform conversion.
-            webhook:
-              type: object
-              description: Webhook conversion configuration.
-              properties:
-                conversionReviewVersions:
-                  type: array
-                  items:
-                    type: string
-                  description: Conversion review API versions the webhook understands.
-                clientConfig:
-                  type: object
-                  description: How to call the webhook.
-                  properties:
-                    url:
-                      type: string
-                      format: uri
-                      description: Webhook URL.
-                    service:
-                      type: object
-                      description: In-cluster service reference for the webhook.
+          description: OpenAPI v3 schema as a JSON Schema object. Specifies types, required fields, enums, minimum/maximum, patterns, and nested object structures for the custom resource spec and status.
   responses:
     NotFound:
       description: CRD not found
