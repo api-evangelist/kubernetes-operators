@@ -132,20 +132,67 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    Status:
+    ListMeta:
       type: object
       properties:
-        code:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
           type: integer
-        message:
+    Condition:
+      type: object
+      description: A condition expressing an aspect of current resource state.
+      required:
+      - type
+      - status
+      properties:
+        type:
           type: string
-        reason:
-          type: string
+          description: Type of condition.
         status:
           type: string
           enum:
-          - Success
-          - Failure
+          - 'True'
+          - 'False'
+          - Unknown
+        reason:
+          type: string
+          description: Machine-readable reason.
+        message:
+          type: string
+          description: Human-readable details.
+        lastTransitionTime:
+          type: string
+          format: date-time
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
     SubscriptionList:
       type: object
       required:
@@ -233,87 +280,41 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Condition'
-    ObjectMeta:
+    Status:
       type: object
-      description: Standard Kubernetes object metadata.
       properties:
-        name:
+        code:
+          type: integer
+        message:
           type: string
-          description: Name of the object.
-        namespace:
+        reason:
           type: string
-          description: Namespace of the object.
-        uid:
-          type: string
-          description: Unique server-assigned identifier.
-        resourceVersion:
-          type: string
-          description: Internal version string.
-        creationTimestamp:
-          type: string
-          format: date-time
-        labels:
-          type: object
-          additionalProperties:
-            type: string
-        annotations:
-          type: object
-          additionalProperties:
-            type: string
-    Condition:
-      type: object
-      description: A condition expressing an aspect of current resource state.
-      required:
-      - type
-      - status
-      properties:
-        type:
-          type: string
-          description: Type of condition.
         status:
           type: string
           enum:
-          - 'True'
-          - 'False'
-          - Unknown
-        reason:
-          type: string
-          description: Machine-readable reason.
-        message:
-          type: string
-          description: Human-readable details.
-        lastTransitionTime:
-          type: string
-          format: date-time
-    ListMeta:
-      type: object
-      properties:
-        resourceVersion:
-          type: string
-        continue:
-          type: string
-        remainingItemCount:
-          type: integer
-  responses:
-    NotFound:
-      description: Not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Status'
+          - Success
+          - Failure
   parameters:
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
+      schema:
+        type: string
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        minimum: 1
     NameParam:
       name: name
       in: path
@@ -327,26 +328,25 @@ components:
       description: If true, stream watch events.
       schema:
         type: boolean
-    NamespaceParam:
-      name: namespace
-      in: path
-      required: true
-      description: Namespace name to scope the request.
-      schema:
-        type: string
-    Limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return.
-      schema:
-        type: integer
-        minimum: 1
-    LabelSelector:
-      name: labelSelector
-      in: query
-      description: Label selector to filter resources.
-      schema:
-        type: string
+  responses:
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Status'
   securitySchemes:
     bearerAuth:
       type: http

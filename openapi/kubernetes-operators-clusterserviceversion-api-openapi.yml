@@ -81,20 +81,90 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    Status:
+    ListMeta:
       type: object
       properties:
-        code:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
           type: integer
-        message:
+    Condition:
+      type: object
+      description: A condition expressing an aspect of current resource state.
+      required:
+      - type
+      - status
+      properties:
+        type:
           type: string
-        reason:
-          type: string
+          description: Type of condition.
         status:
           type: string
           enum:
-          - Success
-          - Failure
+          - 'True'
+          - 'False'
+          - Unknown
+        reason:
+          type: string
+          description: Machine-readable reason.
+        message:
+          type: string
+          description: Human-readable details.
+        lastTransitionTime:
+          type: string
+          format: date-time
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
+    CRDDescription:
+      type: object
+      description: Description of a CRD owned or required by an operator, used in the ClusterServiceVersion to declare the operator's CRD dependencies.
+      required:
+      - name
+      - version
+      - kind
+      properties:
+        name:
+          type: string
+          description: CRD name in {plural}.{group} format.
+        version:
+          type: string
+          description: Version of the CRD API.
+        kind:
+          type: string
+          description: Kind of the custom resource.
+        description:
+          type: string
+          description: Human-readable description of what this CRD represents.
+        displayName:
+          type: string
+          description: Human-readable display name for the CRD.
     ClusterServiceVersion:
       type: object
       description: A ClusterServiceVersion is the primary OLM manifest for an installed operator version. It contains the operator's deployment spec, RBAC rules, owned and required CRDs, install modes, and lifecycle hooks.
@@ -224,81 +294,20 @@ components:
             lastTransitionTime:
               type: string
               format: date-time
-    CRDDescription:
+    Status:
       type: object
-      description: Description of a CRD owned or required by an operator, used in the ClusterServiceVersion to declare the operator's CRD dependencies.
-      required:
-      - name
-      - version
-      - kind
       properties:
-        name:
+        code:
+          type: integer
+        message:
           type: string
-          description: CRD name in {plural}.{group} format.
-        version:
+        reason:
           type: string
-          description: Version of the CRD API.
-        kind:
-          type: string
-          description: Kind of the custom resource.
-        description:
-          type: string
-          description: Human-readable description of what this CRD represents.
-        displayName:
-          type: string
-          description: Human-readable display name for the CRD.
-    ObjectMeta:
-      type: object
-      description: Standard Kubernetes object metadata.
-      properties:
-        name:
-          type: string
-          description: Name of the object.
-        namespace:
-          type: string
-          description: Namespace of the object.
-        uid:
-          type: string
-          description: Unique server-assigned identifier.
-        resourceVersion:
-          type: string
-          description: Internal version string.
-        creationTimestamp:
-          type: string
-          format: date-time
-        labels:
-          type: object
-          additionalProperties:
-            type: string
-        annotations:
-          type: object
-          additionalProperties:
-            type: string
-    Condition:
-      type: object
-      description: A condition expressing an aspect of current resource state.
-      required:
-      - type
-      - status
-      properties:
-        type:
-          type: string
-          description: Type of condition.
         status:
           type: string
           enum:
-          - 'True'
-          - 'False'
-          - Unknown
-        reason:
-          type: string
-          description: Machine-readable reason.
-        message:
-          type: string
-          description: Human-readable details.
-        lastTransitionTime:
-          type: string
-          format: date-time
+          - Success
+          - Failure
     ClusterServiceVersionList:
       type: object
       required:
@@ -315,15 +324,40 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ClusterServiceVersion'
-    ListMeta:
-      type: object
-      properties:
-        resourceVersion:
-          type: string
-        continue:
-          type: string
-        remainingItemCount:
-          type: integer
+  parameters:
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
+      schema:
+        type: string
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+    NameParam:
+      name: name
+      in: path
+      required: true
+      description: Name of the OLM resource.
+      schema:
+        type: string
+    Watch:
+      name: watch
+      in: query
+      description: If true, stream watch events.
+      schema:
+        type: boolean
   responses:
     NotFound:
       description: Not found
@@ -337,40 +371,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
-  parameters:
-    NameParam:
-      name: name
-      in: path
-      required: true
-      description: Name of the OLM resource.
-      schema:
-        type: string
-    NamespaceParam:
-      name: namespace
-      in: path
-      required: true
-      description: Namespace name to scope the request.
-      schema:
-        type: string
-    Watch:
-      name: watch
-      in: query
-      description: If true, stream watch events.
-      schema:
-        type: boolean
-    Limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return.
-      schema:
-        type: integer
-        minimum: 1
-    LabelSelector:
-      name: labelSelector
-      in: query
-      description: Label selector to filter resources.
-      schema:
-        type: string
   securitySchemes:
     bearerAuth:
       type: http
