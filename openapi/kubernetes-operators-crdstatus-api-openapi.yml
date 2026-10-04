@@ -129,6 +129,86 @@ components:
                 statusReplicasPath:
                   type: string
                   description: JSON path to the status replicas field.
+    CustomResourceDefinitionNames:
+      type: object
+      description: Naming configuration for the custom resource type including the kind, plural REST path segment, and optional short names for kubectl.
+      required:
+      - kind
+      - plural
+      properties:
+        kind:
+          type: string
+          description: 'Serialized kind of the resource. Used in API calls and YAML manifests. Example: Database, MyApp.'
+          pattern: ^[A-Z][A-Za-z0-9]*$
+        plural:
+          type: string
+          description: 'Plural name used in the REST URL path. Must be all lowercase. Example: databases, myapps.'
+          pattern: ^[a-z][a-z0-9]*$
+        singular:
+          type: string
+          description: 'Singular name used in kubectl. Defaults to lowercase kind. Example: database, myapp.'
+        shortNames:
+          type: array
+          description: 'Short names for the resource used by kubectl. Example: [db].'
+          items:
+            type: string
+        listKind:
+          type: string
+          description: List kind name. Defaults to {kind}List.
+        categories:
+          type: array
+          description: 'Groups this resource belongs to for kubectl get all and similar. Example: [all].'
+          items:
+            type: string
+    CRDCondition:
+      type: object
+      description: A condition on a CustomResourceDefinition indicating the status of a specific aspect such as name acceptance or API establishment.
+      required:
+      - type
+      - status
+      properties:
+        type:
+          type: string
+          enum:
+          - Established
+          - NamesAccepted
+          - NonStructuralSchema
+          - Terminating
+          - KubernetesAPIApprovalPolicyConformant
+          description: Type of CRD condition.
+        status:
+          type: string
+          enum:
+          - 'True'
+          - 'False'
+          - Unknown
+          description: Status of the condition.
+        reason:
+          type: string
+          description: Machine-readable reason for the condition state.
+        message:
+          type: string
+          description: Human-readable message about the condition.
+        lastTransitionTime:
+          type: string
+          format: date-time
+          description: Time the condition last changed.
+    CustomResourceDefinition:
+      type: object
+      description: A CustomResourceDefinition registers a new API resource type with the Kubernetes API server. Once established, users can create, list, and watch instances of the custom resource just like built-in resources.
+      properties:
+        apiVersion:
+          type: string
+          const: apiextensions.k8s.io/v1
+        kind:
+          type: string
+          const: CustomResourceDefinition
+        metadata:
+          $ref: '#/components/schemas/ObjectMeta'
+        spec:
+          $ref: '#/components/schemas/CustomResourceDefinitionSpec'
+        status:
+          $ref: '#/components/schemas/CustomResourceDefinitionStatus'
     CustomResourceDefinitionSpec:
       type: object
       description: Specification for the custom resource type including the API group, kind names, resource scope, supported versions, and validation schemas.
@@ -186,22 +266,6 @@ components:
                     service:
                       type: object
                       description: In-cluster service reference for the webhook.
-    CustomResourceDefinition:
-      type: object
-      description: A CustomResourceDefinition registers a new API resource type with the Kubernetes API server. Once established, users can create, list, and watch instances of the custom resource just like built-in resources.
-      properties:
-        apiVersion:
-          type: string
-          const: apiextensions.k8s.io/v1
-        kind:
-          type: string
-          const: CustomResourceDefinition
-        metadata:
-          $ref: '#/components/schemas/ObjectMeta'
-        spec:
-          $ref: '#/components/schemas/CustomResourceDefinitionSpec'
-        status:
-          $ref: '#/components/schemas/CustomResourceDefinitionStatus'
     CustomResourceColumnDefinition:
       type: object
       description: A column definition for kubectl get output, displaying a field from the custom resource using a JSON path expression.
@@ -264,77 +328,6 @@ components:
           additionalProperties:
             type: string
           description: Non-identifying metadata.
-    CustomResourceDefinitionNames:
-      type: object
-      description: Naming configuration for the custom resource type including the kind, plural REST path segment, and optional short names for kubectl.
-      required:
-      - kind
-      - plural
-      properties:
-        kind:
-          type: string
-          description: 'Serialized kind of the resource. Used in API calls and YAML manifests. Example: Database, MyApp.'
-          pattern: ^[A-Z][A-Za-z0-9]*$
-        plural:
-          type: string
-          description: 'Plural name used in the REST URL path. Must be all lowercase. Example: databases, myapps.'
-          pattern: ^[a-z][a-z0-9]*$
-        singular:
-          type: string
-          description: 'Singular name used in kubectl. Defaults to lowercase kind. Example: database, myapp.'
-        shortNames:
-          type: array
-          description: 'Short names for the resource used by kubectl. Example: [db].'
-          items:
-            type: string
-        listKind:
-          type: string
-          description: List kind name. Defaults to {kind}List.
-        categories:
-          type: array
-          description: 'Groups this resource belongs to for kubectl get all and similar. Example: [all].'
-          items:
-            type: string
-    CustomResourceValidation:
-      type: object
-      description: OpenAPI v3 schema used to validate custom resource instances on creation and update. Applied per-version or at the CRD level.
-      properties:
-        openAPIV3Schema:
-          type: object
-          description: OpenAPI v3 schema as a JSON Schema object. Specifies types, required fields, enums, minimum/maximum, patterns, and nested object structures for the custom resource spec and status.
-    CRDCondition:
-      type: object
-      description: A condition on a CustomResourceDefinition indicating the status of a specific aspect such as name acceptance or API establishment.
-      required:
-      - type
-      - status
-      properties:
-        type:
-          type: string
-          enum:
-          - Established
-          - NamesAccepted
-          - NonStructuralSchema
-          - Terminating
-          - KubernetesAPIApprovalPolicyConformant
-          description: Type of CRD condition.
-        status:
-          type: string
-          enum:
-          - 'True'
-          - 'False'
-          - Unknown
-          description: Status of the condition.
-        reason:
-          type: string
-          description: Machine-readable reason for the condition state.
-        message:
-          type: string
-          description: Human-readable message about the condition.
-        lastTransitionTime:
-          type: string
-          format: date-time
-          description: Time the condition last changed.
     Status:
       type: object
       description: Error or result status.
@@ -350,15 +343,22 @@ components:
           enum:
           - Success
           - Failure
+    CustomResourceValidation:
+      type: object
+      description: OpenAPI v3 schema used to validate custom resource instances on creation and update. Applied per-version or at the CRD level.
+      properties:
+        openAPIV3Schema:
+          type: object
+          description: OpenAPI v3 schema as a JSON Schema object. Specifies types, required fields, enums, minimum/maximum, patterns, and nested object structures for the custom resource spec and status.
   responses:
-    Unauthorized:
-      description: Unauthorized
+    NotFound:
+      description: CRD not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
-    NotFound:
-      description: CRD not found
+    Unauthorized:
+      description: Unauthorized
       content:
         application/json:
           schema:

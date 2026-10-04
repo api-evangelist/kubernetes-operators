@@ -132,15 +132,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    ListMeta:
-      type: object
-      properties:
-        resourceVersion:
-          type: string
-        continue:
-          type: string
-        remainingItemCount:
-          type: integer
     Condition:
       type: object
       description: A condition expressing an aspect of current resource state.
@@ -166,6 +157,22 @@ components:
         lastTransitionTime:
           type: string
           format: date-time
+    SubscriptionList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: SubscriptionList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
     ObjectMeta:
       type: object
       description: Standard Kubernetes object metadata.
@@ -193,22 +200,29 @@ components:
           type: object
           additionalProperties:
             type: string
-    SubscriptionList:
+    Status:
       type: object
-      required:
-      - items
       properties:
-        apiVersion:
+        code:
+          type: integer
+        message:
           type: string
-        kind:
+        reason:
           type: string
-          const: SubscriptionList
-        metadata:
-          $ref: '#/components/schemas/ListMeta'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Subscription'
+        status:
+          type: string
+          enum:
+          - Success
+          - Failure
+    ListMeta:
+      type: object
+      properties:
+        resourceVersion:
+          type: string
+        continue:
+          type: string
+        remainingItemCount:
+          type: integer
     Subscription:
       type: object
       description: A Subscription expresses intent to install and keep current an operator from a specific channel and catalog. OLM creates InstallPlans from Subscriptions and manages upgrades when new versions are available.
@@ -280,54 +294,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Condition'
-    Status:
-      type: object
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        reason:
-          type: string
-        status:
-          type: string
-          enum:
-          - Success
-          - Failure
-  parameters:
-    NamespaceParam:
-      name: namespace
-      in: path
-      required: true
-      description: Namespace name to scope the request.
-      schema:
-        type: string
-    LabelSelector:
-      name: labelSelector
-      in: query
-      description: Label selector to filter resources.
-      schema:
-        type: string
-    Limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return.
-      schema:
-        type: integer
-        minimum: 1
-    NameParam:
-      name: name
-      in: path
-      required: true
-      description: Name of the OLM resource.
-      schema:
-        type: string
-    Watch:
-      name: watch
-      in: query
-      description: If true, stream watch events.
-      schema:
-        type: boolean
   responses:
     NotFound:
       description: Not found
@@ -347,6 +313,40 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
+  parameters:
+    NameParam:
+      name: name
+      in: path
+      required: true
+      description: Name of the OLM resource.
+      schema:
+        type: string
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
+    Watch:
+      name: watch
+      in: query
+      description: If true, stream watch events.
+      schema:
+        type: boolean
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http
