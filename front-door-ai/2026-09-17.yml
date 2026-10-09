@@ -7,14 +7,18 @@ front_door_ai:
   probed_at: '2026-09-17'
   host: kubernetes.io
   final_host: kubernetes.io
-  ownership: unresolved
-  owner: null
+  ownership: shared
+  owner: kubernetes
   shares_host_with:
   - kubectl
+  - kubernetes
   - kubernetes-services
   inherited_from: null
+  alias_of: null
   verdict: silent
   score: null
+  band: null
+  band_label: null
   host_score: 0
   density: null
   words: 703
