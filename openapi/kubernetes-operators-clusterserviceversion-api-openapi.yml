@@ -81,6 +81,33 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    ObjectMeta:
+      type: object
+      description: Standard Kubernetes object metadata.
+      properties:
+        name:
+          type: string
+          description: Name of the object.
+        namespace:
+          type: string
+          description: Namespace of the object.
+        uid:
+          type: string
+          description: Unique server-assigned identifier.
+        resourceVersion:
+          type: string
+          description: Internal version string.
+        creationTimestamp:
+          type: string
+          format: date-time
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        annotations:
+          type: object
+          additionalProperties:
+            type: string
     ClusterServiceVersion:
       type: object
       description: A ClusterServiceVersion is the primary OLM manifest for an installed operator version. It contains the operator's deployment spec, RBAC rules, owned and required CRDs, install modes, and lifecycle hooks.
@@ -210,6 +237,22 @@ components:
             lastTransitionTime:
               type: string
               format: date-time
+    ClusterServiceVersionList:
+      type: object
+      required:
+      - items
+      properties:
+        apiVersion:
+          type: string
+        kind:
+          type: string
+          const: ClusterServiceVersionList
+        metadata:
+          $ref: '#/components/schemas/ListMeta'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterServiceVersion'
     CRDDescription:
       type: object
       description: Description of a CRD owned or required by an operator, used in the ClusterServiceVersion to declare the operator's CRD dependencies.
@@ -233,22 +276,15 @@ components:
         displayName:
           type: string
           description: Human-readable display name for the CRD.
-    ClusterServiceVersionList:
+    ListMeta:
       type: object
-      required:
-      - items
       properties:
-        apiVersion:
+        resourceVersion:
           type: string
-        kind:
+        continue:
           type: string
-          const: ClusterServiceVersionList
-        metadata:
-          $ref: '#/components/schemas/ListMeta'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClusterServiceVersion'
+        remainingItemCount:
+          type: integer
     Condition:
       type: object
       description: A condition expressing an aspect of current resource state.
@@ -274,33 +310,6 @@ components:
         lastTransitionTime:
           type: string
           format: date-time
-    ObjectMeta:
-      type: object
-      description: Standard Kubernetes object metadata.
-      properties:
-        name:
-          type: string
-          description: Name of the object.
-        namespace:
-          type: string
-          description: Namespace of the object.
-        uid:
-          type: string
-          description: Unique server-assigned identifier.
-        resourceVersion:
-          type: string
-          description: Internal version string.
-        creationTimestamp:
-          type: string
-          format: date-time
-        labels:
-          type: object
-          additionalProperties:
-            type: string
-        annotations:
-          type: object
-          additionalProperties:
-            type: string
     Status:
       type: object
       properties:
@@ -315,15 +324,40 @@ components:
           enum:
           - Success
           - Failure
-    ListMeta:
-      type: object
-      properties:
-        resourceVersion:
-          type: string
-        continue:
-          type: string
-        remainingItemCount:
-          type: integer
+  parameters:
+    LabelSelector:
+      name: labelSelector
+      in: query
+      description: Label selector to filter resources.
+      schema:
+        type: string
+    NamespaceParam:
+      name: namespace
+      in: path
+      required: true
+      description: Namespace name to scope the request.
+      schema:
+        type: string
+    NameParam:
+      name: name
+      in: path
+      required: true
+      description: Name of the OLM resource.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+    Watch:
+      name: watch
+      in: query
+      description: If true, stream watch events.
+      schema:
+        type: boolean
   responses:
     NotFound:
       description: Not found
@@ -337,40 +371,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Status'
-  parameters:
-    NameParam:
-      name: name
-      in: path
-      required: true
-      description: Name of the OLM resource.
-      schema:
-        type: string
-    LabelSelector:
-      name: labelSelector
-      in: query
-      description: Label selector to filter resources.
-      schema:
-        type: string
-    Watch:
-      name: watch
-      in: query
-      description: If true, stream watch events.
-      schema:
-        type: boolean
-    Limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return.
-      schema:
-        type: integer
-        minimum: 1
-    NamespaceParam:
-      name: namespace
-      in: path
-      required: true
-      description: Namespace name to scope the request.
-      schema:
-        type: string
   securitySchemes:
     bearerAuth:
       type: http
